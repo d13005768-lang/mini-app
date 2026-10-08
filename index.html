@@ -1,527 +1,1546 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#090b10">
+<title>StarCard Legends</title>
 
-    <title>StarCard Legends</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+ margin:0;
+ background:#080a0e;
+ color:#f4f5f7;
+ font-family:Inter,Arial,sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+button:active{transform:scale(.97)}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+#app{
+ width:100%;
+ max-width:520px;
+ min-height:100vh;
+ margin:auto;
+ background:#0b0e14;
+ padding-bottom:85px;
+}
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
-        rel="stylesheet"
-    >
+header{
+ height:68px;
+ padding:12px 15px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ border-bottom:1px solid #202630;
+ position:sticky;
+ top:0;
+ z-index:50;
+ background:#0b0e14ee;
+ backdrop-filter:blur(15px);
+}
 
-    <link rel="stylesheet" href="style.css">
+.logo{
+ font-size:18px;
+ font-weight:900;
+ letter-spacing:1px;
+}
+.logo small{
+ display:block;
+ color:#707987;
+ font-size:9px;
+ letter-spacing:2px;
+ margin-top:2px;
+}
+
+.starBalance{
+ background:#151a22;
+ border:1px solid #29313c;
+ color:#fff;
+ padding:9px 12px;
+ border-radius:12px;
+ font-weight:800;
+}
+
+main{padding:16px}
+
+h1{font-size:27px;margin:5px 0}
+h2{font-size:18px;margin:0}
+h3{margin:7px 0;font-size:15px}
+p{margin:5px 0}
+.muted{color:#7c8592;font-size:13px}
+
+.row{
+ display:flex;
+ gap:9px;
+}
+.row>*{flex:1}
+
+.box{
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:15px;
+ padding:14px;
+}
+
+.balances{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+ margin:16px 0;
+}
+
+.balanceTitle{
+ color:#818b98;
+ font-size:11px;
+ text-transform:uppercase;
+}
+.balanceValue{
+ font-size:19px;
+ font-weight:900;
+ margin-top:4px;
+}
+
+.energy{
+ margin:12px 0;
+}
+.energyHead{
+ display:flex;
+ justify-content:space-between;
+ font-size:13px;
+ margin-bottom:7px;
+}
+.bar{
+ height:8px;
+ background:#1b212b;
+ border-radius:20px;
+ overflow:hidden;
+}
+.bar span{
+ display:block;
+ height:100%;
+ background:#7e8cff;
+ border-radius:20px;
+ transition:.2s;
+}
+
+.clickWrap{
+ display:flex;
+ justify-content:center;
+ padding:17px 0 23px;
+}
+
+.clicker{
+ width:220px;
+ height:220px;
+ border-radius:50%;
+ border:1px solid #414b59;
+ background:
+ radial-gradient(circle at 35% 25%,#303949,#1b212b 45%,#11151c 72%);
+ box-shadow:
+ 0 25px 60px #0009,
+ inset 0 0 35px #fff06;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ color:white;
+ user-select:none;
+}
+.clicker .big{font-size:58px}
+.clicker strong{font-size:21px;margin-top:5px}
+.clicker small{color:#858f9d;margin-top:5px}
+
+.btn{
+ border:0;
+ border-radius:11px;
+ padding:11px 13px;
+ background:#edf0f4;
+ color:#080a0e;
+ font-weight:850;
+}
+.btn.dark{
+ background:#151a22;
+ color:#f3f4f6;
+ border:1px solid #29313c;
+}
+.btn.red{
+ background:#cf4658;
+ color:white;
+}
+
+.section{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:21px 0 10px;
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:9px;
+}
+
+.pack{
+ min-height:175px;
+ padding:10px;
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:15px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+}
+.packArt{
+ height:80px;
+ border-radius:11px;
+ background:#181e27;
+ display:grid;
+ place-items:center;
+ font-size:39px;
+}
+.packTitle{font-weight:850;margin-top:9px}
+.packDesc{color:#7e8793;font-size:11px;margin:3px 0 8px}
+
+.card{
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:14px;
+ padding:8px;
+ overflow:hidden;
+}
+.cardArt{
+ height:125px;
+ border-radius:9px;
+ background:linear-gradient(135deg,#202735,#10141b);
+ display:grid;
+ place-items:center;
+ font-size:48px;
+}
+.cardName{
+ font-size:13px;
+ font-weight:850;
+ margin-top:8px;
+}
+.cardMeta{
+ font-size:10px;
+ color:#737d8a;
+ margin-top:4px;
+}
+.rarity{
+ font-size:9px;
+ text-transform:uppercase;
+ font-weight:900;
+ margin-top:5px;
+ letter-spacing:.8px;
+}
+.common{color:#a9b0b8}
+.rare{color:#65a5ff}
+.epic{color:#b77cff}
+.legendary{color:#ffc957}
+.limited{color:#ff6577}
+
+.menu{
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:14px;
+ padding:14px;
+ margin-bottom:9px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+.menuInfo b{display:block;font-size:14px}
+.menuInfo span{
+ display:block;
+ color:#7b8490;
+ font-size:11px;
+ margin-top:4px;
+}
+
+.task{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ padding:12px;
+ margin-bottom:8px;
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:14px;
+}
+.taskIcon{
+ width:42px;
+ height:42px;
+ flex:none;
+ border-radius:11px;
+ background:#1b222c;
+ display:grid;
+ place-items:center;
+ font-size:20px;
+}
+.taskInfo{flex:1}
+.taskInfo b{font-size:13px}
+.taskInfo small{
+ display:block;
+ color:#7c8591;
+ font-size:11px;
+ margin-top:4px;
+}
+
+.tabs{
+ display:flex;
+ gap:7px;
+ overflow:auto;
+ margin:14px 0;
+}
+.tab{
+ white-space:nowrap;
+ background:#121720;
+ border:1px solid #252d38;
+ color:#7f8995;
+ border-radius:10px;
+ padding:9px 12px;
+}
+.tab.active{
+ background:#edf0f4;
+ color:#080a0e;
+}
+
+.modal{
+ position:fixed;
+ inset:0;
+ z-index:100;
+ background:#000b;
+ display:flex;
+ align-items:flex-end;
+ justify-content:center;
+}
+.modal.hidden{display:none}
+.modalContent{
+ width:min(520px,100%);
+ max-height:88vh;
+ overflow:auto;
+ background:#10141b;
+ border:1px solid #2a323e;
+ border-radius:20px 20px 0 0;
+ padding:18px;
+}
+.close{
+ float:right;
+ background:#1b212a;
+ color:white;
+ border:0;
+ border-radius:9px;
+ padding:6px 10px;
+}
+.input{
+ width:100%;
+ padding:12px;
+ margin:8px 0;
+ border-radius:10px;
+ border:1px solid #29313c;
+ background:#090c11;
+ color:white;
+ outline:none;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:7px;
+ margin:14px 0;
+}
+.stat{
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:13px;
+ padding:12px;
+}
+.stat small{color:#737d89;font-size:9px}
+.stat b{display:block;font-size:17px;margin-top:5px}
+
+.pass{
+ background:#121720;
+ border:1px solid #252d38;
+ border-radius:15px;
+ padding:15px;
+}
+.passHead{
+ display:flex;
+ justify-content:space-between;
+ margin-bottom:8px;
+}
+
+.admin{
+ border-color:#713f48;
+ background:#171116;
+}
+.adminTitle{color:#ff7180}
+
+.toast{
+ position:fixed;
+ z-index:200;
+ left:50%;
+ bottom:95px;
+ transform:translateX(-50%);
+ background:#eef1f5;
+ color:#090b0e;
+ border-radius:11px;
+ padding:10px 14px;
+ font-weight:800;
+ white-space:nowrap;
+ box-shadow:0 10px 30px #0009;
+}
+
+nav{
+ position:fixed;
+ left:50%;
+ bottom:0;
+ transform:translateX(-50%);
+ width:min(520px,100%);
+ height:76px;
+ z-index:60;
+ display:grid;
+ grid-template-columns:repeat(5,1fr);
+ background:#0d1118f7;
+ border-top:1px solid #202630;
+ backdrop-filter:blur(15px);
+}
+nav button{
+ border:0;
+ background:none;
+ color:#707986;
+ font-size:20px;
+}
+nav button.active{color:white}
+nav small{
+ display:block;
+ font-size:9px;
+ margin-top:4px;
+}
+
+@media(max-width:360px){
+ .clicker{width:190px;height:190px}
+ .grid{gap:7px}
+ main{padding:12px}
+}
+</style>
 </head>
 
 <body>
 
-<div class="app">
-
-    <!-- HEADER -->
-    <header class="header">
-        <div class="logo">
-            <div class="logo-mark">S</div>
-
-            <div>
-                <div class="logo-title">STARCARD</div>
-                <div class="logo-subtitle">LEGENDS</div>
-            </div>
-        </div>
-
-        <button class="avatar-button" id="profileButton">
-            S
-        </button>
-    </header>
-
-
-    <!-- BALANCES -->
-    <section class="balances">
-
-        <div class="balance balance-coins">
-            <span class="balance-label">COINS</span>
-
-            <strong id="coins">
-                1 000
-            </strong>
-
-            <span class="balance-icon">●</span>
-        </div>
-
-        <div class="balance balance-stars">
-            <span class="balance-label">STARS</span>
-
-            <strong id="stars">
-                0
-            </strong>
-
-            <span class="balance-icon">★</span>
-        </div>
-
-    </section>
-
-
-    <!-- HOME -->
-    <main id="homePage" class="page">
-
-        <section class="hero">
-
-            <div class="hero-background"></div>
-
-            <div class="hero-content">
-
-                <span class="label">
-                    SEASON 01
-                </span>
-
-                <h1>
-                    STAR<br>
-                    <span>CARD</span>
-                </h1>
-
-                <p>
-                    Collect. Battle. Become a Legend.
-                </p>
-
-                <div class="hero-stats">
-
-                    <div>
-                        <strong id="homeCards">0</strong>
-                        <span>CARDS</span>
-                    </div>
-
-                    <div>
-                        <strong id="homeWins">0</strong>
-                        <span>WINS</span>
-                    </div>
-
-                    <div>
-                        <strong id="homeLevel">1</strong>
-                        <span>LEVEL</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PACK -->
-        <section class="section">
-
-            <div class="section-header">
-
-                <div>
-                    <span class="label">COLLECTION</span>
-                    <h2>Open a Pack</h2>
-                </div>
-
-                <span class="pack-price">
-                    50 ●
-                </span>
-
-            </div>
-
-
-            <div class="pack">
-
-                <div class="pack-visual">
-
-                    <div class="pack-circle circle-one"></div>
-                    <div class="pack-circle circle-two"></div>
-
-                    <div class="pack-box">
-                        <span>SC</span>
-                    </div>
-
-                </div>
-
-
-                <div class="pack-info">
-
-                    <h3>LEGENDS PACK</h3>
-
-                    <p>
-                        5 random cards
-                    </p>
-
-                    <div class="rarities">
-
-                        <span class="common">
-                            COMMON 70%
-                        </span>
-
-                        <span class="rare">
-                            RARE 20%
-                        </span>
-
-                        <span class="epic">
-                            EPIC 8%
-                        </span>
-
-                        <span class="legendary">
-                            LEGENDARY 2%
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="main-button"
-                        id="openPack"
-                    >
-                        <span>OPEN PACK</span>
-                        <b>50 ●</b>
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- DAILY -->
-        <section class="section">
-
-            <div class="section-header">
-                <div>
-                    <span class="label">DAILY</span>
-                    <h2>Daily Mission</h2>
-                </div>
-            </div>
-
-            <button
-                class="mission"
-                id="dailyMission"
-            >
-
-                <div class="mission-icon">
-                    ✓
-                </div>
-
-                <div class="mission-text">
-                    <strong>
-                        Open the game
-                    </strong>
-
-                    <span>
-                        Get your daily reward
-                    </span>
-                </div>
-
-                <div class="mission-reward">
-                    +100
-                    <small>COINS</small>
-                </div>
-
-            </button>
-
-        </section>
-
-    </main>
-
-
-    <!-- COLLECTION -->
-    <main
-        id="collectionPage"
-        class="page hidden"
-    >
-
-        <div class="page-title">
-            <span class="label">MY COLLECTION</span>
-
-            <h2>Cards</h2>
-
-            <span class="counter">
-                <b id="collectionCount">0</b> cards
-            </span>
-        </div>
-
-        <div
-            id="collectionContainer"
-            class="cards-grid"
-        ></div>
-
-    </main>
-
-
-    <!-- BATTLES -->
-    <main
-        id="battlesPage"
-        class="page hidden"
-    >
-
-        <div class="page-title">
-            <span class="label">COMPETE</span>
-            <h2>Battles</h2>
-        </div>
-
-        <section class="battle-card">
-
-            <span class="battle-live">
-                ● LIVE
-            </span>
-
-            <h2>
-                1 VS 1
-            </h2>
-
-            <p>
-                Choose your strongest card and
-                fight another player.
-            </p>
-
-            <button
-                class="main-button"
-                id="battleButton"
-            >
-                FIND OPPONENT
-            </button>
-
-        </section>
-
-
-        <div class="battle-list">
-
-            <button class="battle-mode">
-                <span>01</span>
-
-                <div>
-                    <strong>Quick Battle</strong>
-                    <small>Free entry</small>
-                </div>
-
-                <b>›</b>
-            </button>
-
-
-            <button class="battle-mode">
-                <span>02</span>
-
-                <div>
-                    <strong>Star Battle</strong>
-                    <small>Entry: 10 Stars</small>
-                </div>
-
-                <b>›</b>
-            </button>
-
-
-            <button class="battle-mode">
-                <span>03</span>
-
-                <div>
-                    <strong>Tournament</strong>
-                    <small>Coming soon</small>
-                </div>
-
-                <b>›</b>
-            </button>
-
-        </div>
-
-    </main>
-
-
-    <!-- MARKET -->
-    <main
-        id="marketPage"
-        class="page hidden"
-    >
-
-        <div class="page-title">
-            <span class="label">TRADE</span>
-            <h2>Market</h2>
-        </div>
-
-
-        <div class="market-tabs">
-
-            <button class="active">
-                ALL
-            </button>
-
-            <button>
-                RARE
-            </button>
-
-            <button>
-                EPIC
-            </button>
-
-            <button>
-                LEGENDARY
-            </button>
-
-        </div>
-
-
-        <section class="empty-market">
-
-            <div class="empty-icon">
-                ◇
-            </div>
-
-            <h3>
-                Market is empty
-            </h3>
-
-            <p>
-                Player listings will appear here.
-            </p>
-
-        </section>
-
-    </main>
-
-
-    <!-- PROFILE -->
-    <main
-        id="profilePage"
-        class="page hidden"
-    >
-
-        <div class="page-title">
-            <span class="label">PLAYER</span>
-            <h2>Profile</h2>
-        </div>
-
-
-        <section class="profile-card">
-
-            <div
-                class="profile-avatar"
-                id="profileAvatar"
-            >
-                S
-            </div>
-
-            <div class="profile-info">
-
-                <h3 id="playerName">
-                    Star Player
-                </h3>
-
-                <span>
-                    LEGEND · LEVEL 1
-                </span>
-
-            </div>
-
-        </section>
-
-
-        <div class="profile-stats">
-
-            <div>
-                <strong id="profileCards">
-                    0
-                </strong>
-                <span>CARDS</span>
-            </div>
-
-            <div>
-                <strong id="profileWins">
-                    0
-                </strong>
-                <span>WINS</span>
-            </div>
-
-            <div>
-                <strong id="profileCoins">
-                    1 000
-                </strong>
-                <span>COINS</span>
-            </div>
-
-        </div>
-
-
-        <div class="profile-menu">
-
-            <button>
-                <span>Achievements</span>
-                <b>›</b>
-            </button>
-
-            <button>
-                <span>Referral program</span>
-                <b>›</b>
-            </button>
-
-            <button>
-                <span>Withdraw Stars</span>
-                <b>›</b>
-            </button>
-
-        </div>
-
-    </main>
-
-
-    <!-- NAVIGATION -->
-    <nav class="navigation">
-
-        <button
-            class="nav-item active"
-            data-page="home"
-        >
-            <span>⌂</span>
-            <small>HOME</small>
-        </button>
-
-
-        <button
-            class="nav-item"
-            data-page="collection"
-        >
-            <span>◇</span>
-            <small>CARDS</small>
-        </button>
-
-
-        <button
-            class="nav-item nav-center"
-            data-page="home"
-        >
-            <span>★</span>
-        </button>
-
-
-        <button
-            class="nav-item"
-            data-page="battles"
-        >
-            <span>⚔</span>
-            <small>BATTLES</small>
-        </button>
-
-
-        <button
-            class="nav-item"
-            data-page="market"
-        >
-            <span>◫</span>
-            <small>MARKET</small>
-        </button>
-
-    </nav>
+<div id="app">
+
+<header>
+ <div class="logo">
+  STARCARD
+  <small>LEGENDS · SEASON 01</small>
+ </div>
+
+ <button class="starBalance" onclick="openPage('profile')">
+  ⭐ <span id="topStars">1250</span>
+ </button>
+</header>
+
+<main id="screen"></main>
+
+<nav>
+ <button onclick="openPage('home')" id="nav-home">⌂<small>Главная</small></button>
+ <button onclick="openPage('cards')" id="nav-cards">▣<small>Карты</small></button>
+ <button onclick="openPage('battle')" id="nav-battle">⚔<small>Батлы</small></button>
+ <button onclick="openPage('market')" id="nav-market">◇<small>Рынок</small></button>
+ <button onclick="openPage('profile')" id="nav-profile">●<small>Профиль</small></button>
+</nav>
 
 </div>
 
+<div id="modal" class="modal hidden"></div>
 
-<script src="app.js"></script>
+<script>
+
+const ADMIN_USERNAME="florrasoo";
+
+const cardsDB=[
+ {n:"Pixel Knight",r:"Обычная",p:10,e:"🛡️"},
+ {n:"Moon Cat",r:"Обычная",p:10,e:"🐈"},
+ {n:"Street Bot",r:"Обычная",p:10,e:"🤖"},
+ {n:"Meme Dog",r:"Обычная",p:10,e:"🐕"},
+ {n:"Neon Kid",r:"Обычная",p:10,e:"🧑‍🚀"},
+ {n:"Cloud Fox",r:"Обычная",p:10,e:"🦊"},
+ {n:"Retro Duck",r:"Обычная",p:10,e:"🦆"},
+ {n:"Space Rat",r:"Обычная",p:10,e:"🐀"},
+ {n:"Tiny Dragon",r:"Обычная",p:10,e:"🐉"},
+ {n:"Cyber Wolf",r:"Редкая",p:30,e:"🐺"},
+ {n:"Star Samurai",r:"Эпическая",p:60,e:"🥷"},
+ {n:"Void King",r:"Эпическая",p:60,e:"👑"},
+ {n:"Golden Legend",r:"Легендарная",p:100,e:"🌟"},
+ {n:"TikTok Icon",r:"Лимитированная",p:150,e:"🎵"}
+];
+
+let state=JSON.parse(localStorage.getItem("starcard_legends"))||{
+ username:"florrasoo",
+ coins:12500,
+ stars:1250,
+ energy:100,
+ maxEnergy:100,
+ tap:1,
+ level:1,
+ cards:[],
+ referrals:0,
+ referralStars:0,
+ wins:7,
+ battles:12,
+ clan:"Star Hunters",
+ battlePass:18,
+ completed:[],
+ dailyOpened:false,
+ promoUsed:[]
+};
+
+function save(){
+ localStorage.setItem("starcard_legends",JSON.stringify(state));
+}
+
+function tgUser(){
+ try{
+  return window.Telegram.WebApp.initDataUnsafe.user?.username || state.username;
+ }catch(e){
+  return state.username;
+ }
+}
+
+function isAdmin(){
+ return String(tgUser()).toLowerCase()===ADMIN_USERNAME;
+}
+
+function fmt(n){
+ return Math.floor(n).toLocaleString("ru-RU");
+}
+
+function rarityClass(r){
+ if(r==="Обычная")return"common";
+ if(r==="Редкая")return"rare";
+ if(r==="Эпическая")return"epic";
+ if(r==="Легендарная")return"legendary";
+ return"limited";
+}
+
+function toast(text){
+ const el=document.createElement("div");
+ el.className="toast";
+ el.textContent=text;
+ document.body.appendChild(el);
+ setTimeout(()=>el.remove(),1700);
+}
+
+function openPage(name){
+ if(name==="home")home();
+ if(name==="cards")cards();
+ if(name==="battle")battle();
+ if(name==="market")market();
+ if(name==="profile")profile();
+ if(name==="tasks")tasks();
+ if(name==="referrals")referrals();
+ if(name==="pass")battlePass();
+ if(name==="clans")clans();
+ if(name==="tournaments")tournaments();
+ if(name==="admin")admin();
+
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ const n=document.getElementById("nav-"+name);
+ if(n)n.classList.add("active");
+
+ window.scrollTo(0,0);
+}
+
+function home(){
+
+ screen.innerHTML=`
+
+ <h1>Привет, @${tgUser()} 👋</h1>
+ <div class="muted">Твой игровой центр</div>
+
+ <div class="balances">
+  <div class="box">
+   <div class="balanceTitle">Coins</div>
+   <div class="balanceValue">🪙 ${fmt(state.coins)}</div>
+  </div>
+
+  <div class="box">
+   <div class="balanceTitle">Stars</div>
+   <div class="balanceValue">⭐ ${fmt(state.stars)}</div>
+  </div>
+ </div>
+
+ <div class="energy">
+  <div class="energyHead">
+   <span>⚡ Энергия</span>
+   <b>${state.energy}/${state.maxEnergy}</b>
+  </div>
+
+  <div class="bar">
+   <span style="width:${state.energy/state.maxEnergy*100}%"></span>
+  </div>
+ </div>
+
+ <div class="clickWrap">
+  <button class="clicker" onclick="tap()">
+   <div class="big">★</div>
+   <strong>+${state.tap} COIN</strong>
+   <small>НАЖМИ</small>
+  </button>
+ </div>
+
+ <div class="row">
+  <button class="btn dark" onclick="upgrade()">⚡ Улучшить<br>${fmt(500*state.level)} 🪙</button>
+  <button class="btn dark" onclick="boost()">×2<br>50 ⭐</button>
+ </div>
+
+ <div class="section">
+  <h2>Паки</h2>
+  <button class="btn dark" onclick="openPage('cards')">Коллекция</button>
+ </div>
+
+ <div class="grid">
+  ${pack("🎁","Daily Pack","10 карт · 9 обычных + 1 редкая","Бесплатно","daily")}
+  ${pack("📦","Classic Pack","10 карт · 4 / 3 / 2 / 1","100 ⭐","classic")}
+  ${pack("🎵","TikTok Pack","11 карт · 4 / 3 / 2 / 1 / 1","150 ⭐","tiktok")}
+ </div>
+
+ <div class="section">
+  <h2>Быстрые действия</h2>
+ </div>
+
+ <div class="menu" onclick="openPage('tasks')">
+  <div class="menuInfo"><b>🎯 Задания</b><span>Ежедневные, недельные и достижения</span></div>
+  <button class="btn dark">›</button>
+ </div>
+
+ <div class="menu" onclick="openPage('referrals')">
+  <div class="menuInfo"><b>👥 Рефералы</b><span>${state.referrals} приглашённых</span></div>
+  <button class="btn dark">›</button>
+ </div>
+
+ <div class="menu" onclick="openPage('pass')">
+  <div class="menuInfo"><b>🎫 Боевой пропуск</b><span>Сезон 01 · уровень ${state.battlePass}</span></div>
+  <button class="btn dark">›</button>
+ </div>
+ `;
+}
+
+function pack(icon,name,desc,price,type){
+
+ return `
+ <div class="pack">
+  <div class="packArt">${icon}</div>
+
+  <div>
+   <div class="packTitle">${name}</div>
+   <div class="packDesc">${desc}</div>
+  </div>
+
+  <button class="btn" onclick="event.stopPropagation();openPack('${type}')">
+   ${price}
+  </button>
+ </div>
+ `;
+}
+
+function tap(){
+
+ if(state.energy<=0){
+  toast("⚡ Энергия закончилась");
+  return;
+ }
+
+ state.coins+=state.tap;
+ state.energy--;
+
+ save();
+ home();
+}
+
+function upgrade(){
+
+ const price=500*state.level;
+
+ if(state.coins<price){
+  toast("Недостаточно Coins");
+  return;
+ }
+
+ state.coins-=price;
+ state.level++;
+ state.tap++;
+
+ save();
+
+ toast("Доход за тап увеличен");
+ home();
+}
+
+function boost(){
+
+ if(state.stars<50){
+  toast("Недостаточно Stars");
+  return;
+ }
+
+ state.stars-=50;
+ state.tap*=2;
+
+ save();
+
+ toast("Буст ×2 активирован");
+ home();
+}
+
+function choose(arr,n){
+ let result=[];
+
+ for(let i=0;i<n;i++){
+  result.push(arr[Math.floor(Math.random()*arr.length)]);
+ }
+
+ return result;
+}
+
+function openPack(type){
+
+ if(type==="daily"&&state.dailyOpened){
+  toast("Daily Pack уже открыт сегодня");
+  return;
+ }
+
+ const cost=type==="classic"?100:type==="tiktok"?150:0;
+
+ if(cost&&state.stars<cost){
+  toast("Недостаточно Stars");
+  return;
+ }
+
+ if(cost)state.stars-=cost;
+
+ let result=[];
+
+ if(type==="daily"){
+
+  const common=cardsDB.filter(x=>x.r==="Обычная");
+  const rare=cardsDB.filter(x=>x.r==="Редкая");
+
+  result=[
+   ...choose(common,9),
+   ...choose(rare,1)
+  ];
+
+  state.dailyOpened=true;
+ }
+
+ if(type==="classic"){
+
+  result=[
+   ...choose(cardsDB.filter(x=>x.r==="Обычная"),4),
+   ...choose(cardsDB.filter(x=>x.r==="Редкая"),3),
+   ...choose(cardsDB.filter(x=>x.r==="Эпическая"),2),
+   ...choose(cardsDB.filter(x=>x.r==="Легендарная"),1)
+  ];
+ }
+
+ if(type==="tiktok"){
+
+  result=[
+   ...choose(cardsDB.filter(x=>x.r==="Обычная"),4),
+   ...choose(cardsDB.filter(x=>x.r==="Редкая"),3),
+   ...choose(cardsDB.filter(x=>x.r==="Эпическая"),2),
+   ...choose(cardsDB.filter(x=>x.r==="Легендарная"),1),
+   ...choose(cardsDB.filter(x=>x.r==="Лимитированная"),1)
+  ];
+ }
+
+ state.cards.push(...result);
+ save();
+
+ modal(`
+  <button class="close" onclick="closeModal()">×</button>
+  <h2>Пак открыт 🎉</h2>
+  <p class="muted">Получено карт: ${result.length}</p>
+
+  <div class="grid">
+   ${result.map(cardHTML).join("")}
+  </div>
+
+  <button class="btn" style="width:100%;margin-top:12px" onclick="closeModal();openPage('cards')">
+   Забрать
+  </button>
+ `);
+}
+
+function cardHTML(c){
+
+ return `
+ <div class="card">
+  <div class="cardArt">${c.e}</div>
+  <div class="cardName">${c.n}</div>
+  <div class="rarity ${rarityClass(c.r)}">${c.r}</div>
+  <div class="cardMeta">POWER ${c.p}</div>
+ </div>
+ `;
+}
+
+function cards(){
+
+ screen.innerHTML=`
+
+ <h1>Карты</h1>
+ <div class="muted">${state.cards.length} карт в коллекции</div>
+
+ <div class="section"><h2>Открыть пак</h2></div>
+
+ <div class="grid">
+  ${pack("🎁","Daily Pack","9 обычных + 1 редкая","Бесплатно","daily")}
+  ${pack("📦","Classic Pack","4 обычные · 3 редкие · 2 эпик · 1 лега","100 ⭐","classic")}
+  ${pack("🎵","TikTok Pack","4 обычные · 3 редкие · 2 эпик · 1 лега · 1 лимитка","150 ⭐","tiktok")}
+ </div>
+
+ <div class="section">
+  <h2>Моя коллекция</h2>
+ </div>
+
+ <div class="grid">
+  ${
+   state.cards.length
+   ?state.cards.map(cardHTML).join("")
+   :`<div class="box" style="grid-column:1/-1">Открой первый пак, чтобы получить карты.</div>`
+  }
+ </div>
+ `;
+}
+
+function battle(){
+
+ screen.innerHTML=`
+
+ <h1>Батлы</h1>
+ <div class="muted">Сражайся за Coins и Stars</div>
+
+ <div class="stats">
+  <div class="stat"><small>ПОБЕДЫ</small><b>${state.wins}</b></div>
+  <div class="stat"><small>БОЕВ</small><b>${state.battles}</b></div>
+  <div class="stat"><small>WINRATE</small><b>${Math.round(state.wins/state.battles*100)}%</b></div>
+ </div>
+
+ ${battleMode("⚔️","Дуэль 1-на-1","1 карта · 20 ⭐","duel")}
+ ${battleMode("🏆","Турнир 8 игроков","Вход · 50 ⭐","tournament")}
+ ${battleMode("💥","Royal Rumble","До 10 игроков","rumble")}
+ ${battleMode("🛡️","Клановый батл","5 карт против клана","clan")}
+
+ <div class="section"><h2>Турниры</h2></div>
+
+ <div class="menu" onclick="openPage('tournaments')">
+  <div class="menuInfo">
+   <b>🏆 Все турниры</b>
+   <span>Ежедневные · недельные · сезонные</span>
+  </div>
+  <button class="btn dark">›</button>
+ </div>
+
+ <div class="section"><h2>Мой клан</h2></div>
+
+ <div class="box">
+  <h2>🛡️ ${state.clan}</h2>
+  <p class="muted">24 участника · рейтинг #18</p>
+  <button class="btn dark" onclick="openPage('clans')">Открыть клан</button>
+ </div>
+ `;
+}
+
+function battleMode(icon,name,desc,type){
+
+ return `
+ <div class="menu">
+  <div class="menuInfo">
+   <b>${icon} ${name}</b>
+   <span>${desc}</span>
+  </div>
+
+  <button class="btn" onclick="startBattle('${type}')">Играть</button>
+ </div>
+ `;
+}
+
+function startBattle(type){
+
+ state.battles++;
+
+ let chance=.5+Math.min(state.cards.length*.008,.25);
+ let win=Math.random()<chance;
+
+ if(win){
+
+  state.wins++;
+  state.coins+=type==="tournament"?1000:300;
+  state.stars+=type==="tournament"?20:5;
+
+  toast("🏆 Победа! Награда получена");
+ }else{
+  toast("Поражение. Попробуй ещё раз");
+ }
+
+ save();
+ battle();
+}
+
+function market(){
+
+ screen.innerHTML=`
+
+ <h1>Рынок</h1>
+ <div class="muted">Покупка и продажа карт · демо</div>
+
+ <div class="tabs">
+  <button class="tab active">Все</button>
+  <button class="tab">Coins</button>
+  <button class="tab">Stars</button>
+  <button class="tab">Аукционы</button>
+ </div>
+
+ ${marketCard("🌟","Golden Legend","Легендарная","850 ⭐")}
+ ${marketCard("🐺","Cyber Wolf","Редкая","2500 🪙")}
+ ${marketCard("👑","Void King","Эпическая","1200 ⭐")}
+ ${marketCard("🎵","TikTok Icon","Лимитированная","2500 ⭐")}
+
+ <button class="btn" style="width:100%;margin-top:10px" onclick="sellCard()">
+  + Выставить карту
+ </button>
+
+ <div class="section"><h2>История цен</h2></div>
+
+ <div class="box">
+  <p class="muted">Golden Legend · 30 дней</p>
+  <h2>850 ⭐</h2>
+  <p style="color:#6bd39b">▲ +14.2%</p>
+ </div>
+ `;
+}
+
+function marketCard(icon,name,rarity,price){
+
+ return `
+ <div class="menu">
+  <div class="menuInfo">
+   <b>${icon} ${name}</b>
+   <span>${rarity} · продавец #${Math.floor(Math.random()*9000+1000)}</span>
+  </div>
+
+  <button class="btn" onclick="buyMarket('${price}')">${price}</button>
+ </div>
+ `;
+}
+
+function buyMarket(price){
+
+ const amount=parseInt(price.replace(/\D/g,""));
+ const stars=price.includes("⭐");
+
+ if(stars){
+
+  if(state.stars<amount){
+   toast("Недостаточно Stars");
+   return;
+  }
+
+  state.stars-=amount;
+
+ }else{
+
+  if(state.coins<amount){
+   toast("Недостаточно Coins");
+   return;
+  }
+
+  state.coins-=amount;
+ }
+
+ state.cards.push(cardsDB[Math.floor(Math.random()*cardsDB.length)]);
+
+ save();
+ toast("Карта куплена");
+ market();
+}
+
+function sellCard(){
+
+ if(!state.cards.length){
+  toast("Нет карт для продажи");
+  return;
+ }
+
+ state.cards.pop();
+ state.coins+=500;
+
+ save();
+
+ toast("Карта продана за 500 Coins");
+ market();
+}
+
+function profile(){
+
+ screen.innerHTML=`
+
+ <h1>Профиль</h1>
+ <div class="muted">@${tgUser()}</div>
+
+ <div class="box" style="margin-top:15px">
+
+  <div class="stats">
+   <div class="stat"><small>COINS</small><b>${fmt(state.coins)}</b></div>
+   <div class="stat"><small>STARS</small><b>${fmt(state.stars)}</b></div>
+   <div class="stat"><small>КАРТЫ</small><b>${state.cards.length}</b></div>
+  </div>
+
+  <p class="muted">Уровень ${state.level}</p>
+
+ </div>
+
+ ${menuButton("🎯","Задания","Daily · Weekly · Achievements","tasks")}
+ ${menuButton("👥","Рефералы",state.referrals+" приглашённых","referrals")}
+ ${menuButton("🎫","Боевой пропуск","Уровень "+state.battlePass,"pass")}
+ ${menuButton("🛡️","Кланы",state.clan,"clans")}
+ ${menuButton("🏆","Турниры","Ежедневные и сезонные","tournaments")}
+ ${menuButton("🎟️","Промокод","Активировать код","promo")}
+
+ <div class="menu" onclick="withdraw()">
+  <div class="menuInfo">
+   <b>💸 Вывод Stars</b>
+   <span>Минимум 1000 Stars · демо</span>
+  </div>
+  <button class="btn dark">›</button>
+ </div>
+
+ ${
+  isAdmin()
+  ?`
+  <div class="menu admin" onclick="openPage('admin')">
+   <div class="menuInfo">
+    <b class="adminTitle">🔐 Админ-панель</b>
+    <span>Доступ: @florrasoo</span>
+   </div>
+   <button class="btn dark">›</button>
+  </div>
+  `:""
+ }
+ `;
+}
+
+function menuButton(icon,title,desc,target){
+
+ return `
+ <div class="menu" onclick="openPage('${target}')">
+  <div class="menuInfo">
+   <b>${icon} ${title}</b>
+   <span>${desc}</span>
+  </div>
+  <button class="btn dark">›</button>
+ </div>
+ `;
+}
+
+function tasks(){
+
+ const rows=[
+  ["👆","100 тапов","+1 000 Coins",1],
+  ["🎁","Открыть пак","+50 Stars",2],
+  ["⚔️","Выиграть батл","+300 Coins",3],
+  ["🛒","Продать карту","+200 Coins",4],
+  ["👥","Пригласить друга","+100 Stars",5],
+  ["🌟","Первая легендарка","+250 Stars",6],
+  ["🏆","100 побед","+1 000 Stars",7],
+  ["💰","Миллионер","+500 Stars",8]
+ ];
+
+ screen.innerHTML=`
+ <h1>Задания</h1>
+ <div class="muted">Получай награды за активность</div>
+
+ <div class="section"><h2>Daily</h2></div>
+
+ ${rows.slice(0,5).map(taskHTML).join("")}
+
+ <div class="section"><h2>Achievements</h2></div>
+
+ ${rows.slice(5).map(taskHTML).join("")}
+
+ <div class="section"><h2>Weekly</h2></div>
+
+ <div class="task">
+  <div class="taskIcon">🏆</div>
+  <div class="taskInfo">
+   <b>Выиграть 10 батлов</b>
+   <small>Прогресс ${Math.min(state.wins,10)}/10 · +500 ⭐</small>
+  </div>
+  <button class="btn dark" onclick="toast('Награда проверяется')">›</button>
+ </div>
+ `;
+}
+
+function taskHTML(x){
+
+ const done=state.completed.includes(x[3]);
+
+ return `
+ <div class="task">
+  <div class="taskIcon">${x[0]}</div>
+
+  <div class="taskInfo">
+   <b>${x[1]}</b>
+   <small>${x[2]}</small>
+  </div>
+
+  <button class="btn ${done?"dark":""}" onclick="completeTask(${x[3]})">
+   ${done?"✓":"Забрать"}
+  </button>
+ </div>
+ `;
+}
+
+function completeTask(id){
+
+ if(state.completed.includes(id)){
+  toast("Уже получено");
+  return;
+ }
+
+ const rewards={
+  1:[1000,0],
+  2:[0,50],
+  3:[300,0],
+  4:[200,0],
+  5:[0,100],
+  6:[0,250],
+  7:[0,1000],
+  8:[0,500]
+ };
+
+ state.coins+=rewards[id][0];
+ state.stars+=rewards[id][1];
+ state.completed.push(id);
+
+ save();
+
+ toast("🎉 Награда получена");
+ tasks();
+}
+
+function referrals(){
+
+ screen.innerHTML=`
+
+ <h1>Рефералы</h1>
+ <div class="muted">Приглашай друзей в StarCard Legends</div>
+
+ <div class="box" style="margin-top:15px">
+  <div class="balanceTitle">Твоя реферальная ссылка</div>
+
+  <p style="word-break:break-all">
+   t.me/StarCardBot?start=${tgUser()}
+  </p>
+
+  <button class="btn" onclick="copyReferral()">Скопировать</button>
+ </div>
+
+ <div class="balances">
+  <div class="box">
+   <div class="balanceTitle">Друзья</div>
+   <div class="balanceValue">👥 ${state.referrals}</div>
+  </div>
+
+  <div class="box">
+   <div class="balanceTitle">Заработано</div>
+   <div class="balanceValue">⭐ ${state.referralStars}</div>
+  </div>
+ </div>
+
+ <div class="section"><h2>Уровни</h2></div>
+
+ <div class="menu"><div class="menuInfo"><b>1 уровень</b><span>Траты приглашённого</span></div><b>10%</b></div>
+ <div class="menu"><div class="menuInfo"><b>2 уровень</b><span>Траты приглашённого</span></div><b>5%</b></div>
+ <div class="menu"><div class="menuInfo"><b>3 уровень</b><span>Траты приглашённого</span></div><b>2%</b></div>
+
+ <button class="btn" style="width:100%" onclick="demoReferral()">
+  + Добавить демо-реферала
+ </button>
+ `;
+}
+
+function demoReferral(){
+
+ state.referrals++;
+ state.referralStars+=100;
+ state.stars+=100;
+
+ save();
+
+ toast("+100 Stars");
+ referrals();
+}
+
+function copyReferral(){
+
+ const text="t.me/StarCardBot?start="+tgUser();
+
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(text);
+ }
+
+ toast("Ссылка скопирована");
+}
+
+function battlePass(){
+
+ screen.innerHTML=`
+
+ <h1>Боевой пропуск</h1>
+ <div class="muted">Season 01 · 30 дней</div>
+
+ <div class="pass" style="margin-top:15px">
+  <div class="passHead">
+   <b>Уровень ${state.battlePass}</b>
+   <span>720 / 1000 XP</span>
+  </div>
+
+  <div class="bar">
+   <span style="width:72%"></span>
+  </div>
+ </div>
+
+ <div class="section"><h2>Награды</h2></div>
+
+ ${[1,2,3,4,5].map((x)=>`
+ <div class="menu">
+  <div class="menuInfo">
+   <b>Уровень ${state.battlePass+x}</b>
+   <span>${x%2?"🪙 2 000 Coins":"⭐ 50 Stars"} · Premium</span>
+  </div>
+  <span>🔒</span>
+ </div>
+ `).join("")}
+
+ <button class="btn" style="width:100%" onclick="buyPass()">
+  Открыть Premium · 500 ⭐
+ </button>
+ `;
+}
+
+function buyPass(){
+
+ if(state.stars<500){
+  toast("Недостаточно Stars");
+  return;
+ }
+
+ state.stars-=500;
+
+ save();
+
+ toast("Premium Pass активирован");
+ battlePass();
+}
+
+function clans(){
+
+ screen.innerHTML=`
+
+ <h1>Кланы</h1>
+ <div class="muted">Вместе сильнее</div>
+
+ <div class="box" style="margin-top:15px">
+  <h2>🛡️ ${state.clan}</h2>
+  <p class="muted">24 участника · рейтинг #18</p>
+
+  <div class="bar" style="margin-top:12px">
+   <span style="width:68%"></span>
+  </div>
+
+  <p class="muted">Клановый прогресс · 68%</p>
+ </div>
+
+ <div class="menu">
+  <div class="menuInfo">
+   <b>⚔️ Клановая война</b>
+   <span>Через 2д 14ч</span>
+  </div>
+  <button class="btn" onclick="toast('Война открыта в демо')">Открыть</button>
+ </div>
+
+ <div class="menu">
+  <div class="menuInfo">
+   <b>🎯 Клановые задания</b>
+   <span>3 / 7 выполнено</span>
+  </div>
+  <button class="btn dark">›</button>
+ </div>
+
+ <button class="btn" style="width:100%" onclick="toast('Заявка отправлена')">
+  Создать / вступить в клан
+ </button>
+ `;
+}
+
+function tournaments(){
+
+ screen.innerHTML=`
+
+ <h1>Турниры</h1>
+ <div class="muted">Соревнования за Stars и эксклюзивные карты</div>
+
+ ${tournament("Daily Cup",500)}
+ ${tournament("Weekend Legends",1500)}
+ ${tournament("Season Finals",5000)}
+
+ `;
+}
+
+function tournament(name,prize){
+
+ return `
+ <div class="box" style="margin-top:10px">
+  <h3>🏆 ${name}</h3>
+  <p class="muted">8 игроков · сетка на выбывание</p>
+  <p>Призовой фонд: <b>⭐ ${prize}</b></p>
+
+  <button class="btn" onclick="startBattle('tournament')">
+   Участвовать · 50 ⭐
+  </button>
+ </div>
+ `;
+}
+
+function withdraw(){
+
+ if(state.stars<1000){
+  toast("Минимум для вывода — 1000 Stars");
+  return;
+ }
+
+ modal(`
+  <button class="close" onclick="closeModal()">×</button>
+  <h2>Вывод Stars</h2>
+  <p class="muted">Это демонстрационная заявка. Реальная выплата не производится.</p>
+
+  <input id="withdrawAmount" class="input" type="number" min="1000" placeholder="Количество Stars">
+
+  <button class="btn" style="width:100%" onclick="requestWithdraw()">
+   Создать заявку
+  </button>
+ `);
+}
+
+function requestWithdraw(){
+
+ const amount=parseInt(document.getElementById("withdrawAmount").value);
+
+ if(!amount||amount<1000||amount>state.stars){
+  toast("Некорректная сумма");
+  return;
+ }
+
+ state.stars-=amount;
+
+ save();
+
+ closeModal();
+
+ toast("Заявка создана в демо");
+}
+
+function promo(){
+
+ modal(`
+  <button class="close" onclick="closeModal()">×</button>
+
+  <h2>Промокод</h2>
+  <p class="muted">Попробуй STAR100, WELCOME или TIKTOK</p>
+
+  <input id="promoInput" class="input" placeholder="Введите код">
+
+  <button class="btn" style="width:100%" onclick="activatePromo()">
+   Активировать
+  </button>
+ `);
+}
+
+function activatePromo(){
+
+ const code=document.getElementById("promoInput").value.trim().toUpperCase();
+
+ const rewards={
+  STAR100:100,
+  WELCOME:250,
+  TIKTOK:150
+ };
+
+ if(state.promoUsed.includes(code)){
+  toast("Код уже использован");
+  return;
+ }
+
+ if(!rewards[code]){
+  toast("Промокод не найден");
+  return;
+ }
+
+ state.stars+=rewards[code];
+ state.promoUsed.push(code);
+
+ save();
+
+ closeModal();
+
+ toast("+"+rewards[code]+" Stars");
+}
+
+function admin(){
+
+ if(!isAdmin()){
+  toast("Доступ запрещён");
+  openPage("profile");
+  return;
+ }
+
+ screen.innerHTML=`
+
+ <h1>Админ-панель</h1>
+ <div class="muted adminTitle">@florrasoo · DEMO ADMIN</div>
+
+ <div class="balances">
+  <div class="box">
+   <div class="balanceTitle">Пользователи</div>
+   <div class="balanceValue">1 284</div>
+  </div>
+
+  <div class="box">
+   <div class="balanceTitle">Оборот Stars</div>
+   <div class="balanceValue">84 920 ⭐</div>
+  </div>
+ </div>
+
+ ${adminItem("👥","Пользователи","1 284 аккаунта")}
+ ${adminItem("🃏","Карты","14 карт")}
+ ${adminItem("📦","Паки","3 активных")}
+ ${adminItem("🎟️","Промокоды","12 активных")}
+ ${adminItem("💸","Выводы","4 ожидают")}
+ ${adminItem("🛒","Модерация рынка","7 новых лотов")}
+ ${adminItem("🏆","Турниры","3 активных")}
+ ${adminItem("📊","Статистика","Оборот, DAU, экономика")}
+
+ <div class="box admin" style="margin-top:12px">
+  <h3 class="adminTitle">Управление балансом</h3>
+
+  <input id="adminStars" class="input" type="number" placeholder="Stars">
+
+  <div class="row">
+   <button class="btn" onclick="adminAddStars()">+ Начислить</button>
+   <button class="btn red" onclick="adminRemoveStars()">− Списать</button>
+  </div>
+ </div>
+
+ <button class="btn dark" style="width:100%;margin-top:10px" onclick="resetDemo()">
+  Сбросить демо
+ </button>
+ `;
+}
+
+function adminItem(icon,name,desc){
+
+ return `
+ <div class="menu admin">
+  <div class="menuInfo">
+   <b>${icon} ${name}</b>
+   <span>${desc}</span>
+  </div>
+
+  <button class="btn dark" onclick="toast('${name}: открыто')">
+   Открыть
+  </button>
+ </div>
+ `;
+}
+
+function adminAddStars(){
+
+ const n=parseInt(document.getElementById("adminStars").value)||0;
+
+ state.stars+=n;
+ save();
+
+ toast("Stars начислены");
+ admin();
+}
+
+function adminRemoveStars(){
+
+ const n=parseInt(document.getElementById("adminStars").value)||0;
+
+ state.stars=Math.max(0,state.stars-n);
+ save();
+
+ toast("Stars списаны");
+ admin();
+}
+
+function resetDemo(){
+
+ localStorage.removeItem("starcard_legends");
+ location.reload();
+}
+
+function modal(content){
+
+ modalBox.innerHTML=`
+  <div class="modalContent">
+   ${content}
+  </div>
+ `;
+
+ modalEl.classList.remove("hidden");
+}
+
+function closeModal(){
+
+ modalEl.classList.add("hidden");
+}
+
+const screen=document.getElementById("screen");
+const modalEl=document.getElementById("modal");
+const modalBox=document.getElementById("modal");
+
+setInterval(()=>{
+
+ if(state.energy<state.maxEnergy){
+
+  state.energy++;
+  save();
+
+  if(screen.innerHTML.includes("Энергия")){
+   home();
+  }
+ }
+
+},3000);
+
+try{
+ Telegram.WebApp.ready();
+ Telegram.WebApp.expand();
+}catch(e){}
+
+openPage("home");
+
+</script>
 
 </body>
 </html>
-```
