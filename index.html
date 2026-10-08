@@ -9,7 +9,17 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
+    <meta name="theme-color" content="#0A0A1A">
+
     <title>StarCard Legends</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Montserrat:wght@700;800;900&display=swap"
+        rel="stylesheet"
+    >
 
     <link rel="stylesheet" href="style.css">
 
@@ -20,188 +30,269 @@
 
 <div class="app">
 
-    <!-- HEADER -->
+    <!-- TOP -->
     <header class="topbar">
 
         <div class="brand">
-            <div class="logo">⭐ StarCard</div>
-            <div class="subtitle">LEGENDS</div>
+            <div class="brand-mark">SC</div>
+
+            <div class="brand-text">
+                <strong>STARCARD</strong>
+                <span>LEGENDS</span>
+            </div>
         </div>
 
-        <div class="coins">
-            💰 <span id="coins">100</span>
-        </div>
+        <button class="profile-mini" data-page="profile">
+            <span id="headerAvatar">S</span>
+        </button>
 
     </header>
 
 
-    <!-- HOME -->
-    <main id="homePage">
+    <!-- MAIN -->
+    <main id="homePage" class="page home-page">
 
-        <section class="hero">
+        <!-- BALANCE -->
+        <section class="balance-panel">
 
-            <div class="hero-star">⭐</div>
+            <div class="balance-main">
 
-            <h1>StarCard Legends</h1>
+                <span class="balance-label">
+                    TOTAL BALANCE
+                </span>
 
-            <p>
-                Собирай легендарные карты,
-                открывай паки и пополняй коллекцию.
-            </p>
+                <div class="balance-value">
+                    <span id="coins">100</span>
+                    <small>COINS</small>
+                </div>
 
-            <button
-                class="pack-button"
-                id="openPack"
-            >
-                🎴 ОТКРЫТЬ ПАК
-            </button>
+            </div>
 
-            <div class="pack-price">
-                Стоимость: 💰 10
+            <div class="balance-side">
+
+                <span class="star-symbol">✦</span>
+
+                <div>
+                    <strong id="stars">0</strong>
+                    <small>STARS</small>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEASON -->
+        <section class="season-card">
+
+            <div class="season-glow"></div>
+
+            <div class="season-top">
+
+                <div>
+                    <span class="eyebrow">
+                        CURRENT SEASON
+                    </span>
+
+                    <h1>
+                        NEON<br>
+                        ASCENSION
+                    </h1>
+                </div>
+
+                <span class="season-number">
+                    S01
+                </span>
+
+            </div>
+
+            <div class="season-bottom">
+
+                <div class="season-progress">
+
+                    <div class="progress-info">
+                        <span>Season progress</span>
+                        <strong>12%</strong>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            style="width: 12%"
+                        ></div>
+                    </div>
+
+                </div>
+
+                <button class="season-button">
+                    VIEW
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- PACK -->
+        <section class="pack-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="eyebrow">
+                        FEATURED DROP
+                    </span>
+
+                    <h2>
+                        LEGENDARY PACK
+                    </h2>
+                </div>
+
+                <span class="pack-tag">
+                    LIMITED
+                </span>
+
+            </div>
+
+
+            <div class="pack-card">
+
+                <div class="pack-art">
+
+                    <div class="pack-ring ring-one"></div>
+                    <div class="pack-ring ring-two"></div>
+
+                    <div class="pack-core">
+                        <span>SC</span>
+                    </div>
+
+                    <div class="pack-particle particle-one"></div>
+                    <div class="pack-particle particle-two"></div>
+                    <div class="pack-particle particle-three"></div>
+
+                </div>
+
+
+                <div class="pack-info">
+
+                    <div class="pack-title">
+                        <strong>
+                            LEGENDS DROP #01
+                        </strong>
+
+                        <span>
+                            5 CARDS
+                        </span>
+                    </div>
+
+                    <div class="rarity-row">
+
+                        <span class="rarity common">
+                            COMMON
+                        </span>
+
+                        <span class="rarity rare">
+                            RARE
+                        </span>
+
+                        <span class="rarity epic">
+                            EPIC
+                        </span>
+
+                        <span class="rarity legendary">
+                            LEGENDARY
+                        </span>
+
+                    </div>
+
+                    <button
+                        id="openPack"
+                        class="primary-button"
+                    >
+                        <span>OPEN PACK</span>
+
+                        <strong>
+                            10 <i>◈</i>
+                        </strong>
+                    </button>
+
+                </div>
+
             </div>
 
         </section>
 
 
         <!-- STATS -->
-        <section class="stats">
+        <section class="stats-grid">
 
-            <div class="stat">
+            <div class="stat-card">
 
-                <span>🎴</span>
+                <span class="stat-icon">
+                    ◈
+                </span>
 
-                <strong id="cards">
-                    0
-                </strong>
-
-                <small>
-                    Карт
-                </small>
-
-            </div>
-
-
-            <div class="stat">
-
-                <span>⭐</span>
-
-                <strong>
-                    1
-                </strong>
-
-                <small>
-                    Уровень
-                </small>
+                <div>
+                    <strong id="cards">0</strong>
+                    <small>CARDS</small>
+                </div>
 
             </div>
 
 
-            <div class="stat">
+            <div class="stat-card">
 
-                <span>💰</span>
+                <span class="stat-icon">
+                    ◇
+                </span>
 
-                <strong id="coinsStat">
-                    100
-                </strong>
+                <div>
+                    <strong>1</strong>
+                    <small>LEVEL</small>
+                </div>
 
-                <small>
-                    Монеты
-                </small>
+            </div>
+
+
+            <div class="stat-card">
+
+                <span class="stat-icon">
+                    #
+                </span>
+
+                <div>
+                    <strong>0</strong>
+                    <small>WINS</small>
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- QUICK ACCESS -->
-        <section class="section">
+        <!-- DAILY -->
+        <section class="daily-card">
 
-            <h2>
-                ⚡ Быстрый доступ
-            </h2>
+            <div class="daily-copy">
 
+                <span class="eyebrow">
+                    DAILY MISSION
+                </span>
 
-            <div class="menu-grid">
+                <h3>
+                    Open your first pack
+                </h3>
 
-                <button
-                    class="menu-card"
-                    data-page="collection"
-                >
+                <p>
+                    Complete the mission and receive
+                    a reward.
+                </p>
 
-                    <span>
-                        📚
-                    </span>
+            </div>
 
-                    <b>
-                        Коллекция
-                    </b>
-
-                    <small>
-                        Твои карты
-                    </small>
-
-                </button>
-
-
-                <button
-                    class="menu-card"
-                    data-page="packs"
-                >
-
-                    <span>
-                        🎴
-                    </span>
-
-                    <b>
-                        Паки
-                    </b>
-
-                    <small>
-                        Открывай паки
-                    </small>
-
-                </button>
-
-
-                <button
-                    class="menu-card"
-                    data-page="rewards"
-                >
-
-                    <span>
-                        🎁
-                    </span>
-
-                    <b>
-                        Награды
-                    </b>
-
-                    <small>
-                        Получай бонусы
-                    </small>
-
-                </button>
-
-
-                <button
-                    class="menu-card"
-                    data-page="profile"
-                >
-
-                    <span>
-                        👤
-                    </span>
-
-                    <b>
-                        Профиль
-                    </b>
-
-                    <small>
-                        Твой аккаунт
-                    </small>
-
-                </button>
-
+            <div class="daily-reward">
+                <strong>+25</strong>
+                <span>COINS</span>
             </div>
 
         </section>
@@ -209,175 +300,281 @@
     </main>
 
 
-    <!-- PACK RESULT -->
-    <section
-        id="packPage"
-        class="page hidden"
-    >
-
-        <button
-            class="back-button"
-            id="backHome"
-        >
-            ← Назад
-        </button>
-
-        <div class="pack-result">
-
-            <div class="pack-icon">
-                🎴
-            </div>
-
-            <h2>
-                Пак открыт!
-            </h2>
-
-            <p>
-                Ты получил 5 новых карт
-            </p>
-
-        </div>
-
-
-        <div
-            id="cardsContainer"
-            class="cards-container"
-        >
-        </div>
-
-
-        <button
-            class="pack-button"
-            id="openAnotherPack"
-        >
-            🎴 ОТКРЫТЬ ЕЩЁ
-        </button>
-
-    </section>
-
-
-    <!-- COLLECTION -->
-    <section
+    <!-- CARDS -->
+    <main
         id="collectionPage"
         class="page hidden"
     >
 
-        <button
-            class="back-button"
-            data-home
-        >
-            ← Назад
-        </button>
+        <div class="page-header">
 
-        <h2>
-            📚 Моя коллекция
-        </h2>
+            <div>
+                <span class="eyebrow">
+                    YOUR COLLECTION
+                </span>
+
+                <h2>CARDS</h2>
+            </div>
+
+            <span class="collection-count">
+                <b id="collectionCount">0</b> / 100
+            </span>
+
+        </div>
 
         <div
             id="collectionContainer"
-            class="collection-container"
-        >
+            class="collection-grid"
+        ></div>
+
+    </main>
+
+
+    <!-- BATTLES -->
+    <main
+        id="battlesPage"
+        class="page hidden"
+    >
+
+        <div class="page-header">
+
+            <div>
+                <span class="eyebrow">
+                    COMPETE
+                </span>
+
+                <h2>BATTLES</h2>
+            </div>
+
         </div>
 
-    </section>
+
+        <section class="battle-feature">
+
+            <span class="battle-status">
+                LIVE
+            </span>
+
+            <h3>
+                QUICK DUEL
+            </h3>
+
+            <p>
+                Choose your strongest card
+                and challenge another player.
+            </p>
+
+            <button class="primary-button">
+                FIND OPPONENT
+            </button>
+
+        </section>
+
+
+        <div class="battle-modes">
+
+            <button class="mode-card">
+
+                <span>01</span>
+
+                <strong>DUEL</strong>
+
+                <small>
+                    1 × 1
+                </small>
+
+            </button>
+
+            <button class="mode-card">
+
+                <span>02</span>
+
+                <strong>TOURNAMENT</strong>
+
+                <small>
+                    8 PLAYERS
+                </small>
+
+            </button>
+
+            <button class="mode-card">
+
+                <span>03</span>
+
+                <strong>CLAN WAR</strong>
+
+                <small>
+                    5 × 5
+                </small>
+
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <!-- MARKET -->
+    <main
+        id="marketPage"
+        class="page hidden"
+    >
+
+        <div class="page-header">
+
+            <div>
+                <span class="eyebrow">
+                    PLAYER MARKET
+                </span>
+
+                <h2>MARKET</h2>
+            </div>
+
+            <button class="filter-button">
+                FILTER
+            </button>
+
+        </div>
+
+
+        <div class="market-tabs">
+
+            <button class="active">
+                ALL
+            </button>
+
+            <button>
+                RARE
+            </button>
+
+            <button>
+                EPIC
+            </button>
+
+            <button>
+                LEGENDARY
+            </button>
+
+        </div>
+
+
+        <div class="market-empty">
+
+            <div class="empty-mark">
+                ◇
+            </div>
+
+            <h3>
+                MARKET IS EMPTY
+            </h3>
+
+            <p>
+                Player listings will appear here.
+            </p>
+
+        </div>
+
+    </main>
 
 
     <!-- PROFILE -->
-    <section
+    <main
         id="profilePage"
         class="page hidden"
     >
 
-        <button
-            class="back-button"
-            data-home
-        >
-            ← Назад
-        </button>
-
-        <h2>
-            👤 Профиль
-        </h2>
-
-        <div class="profile-card">
-
-            <div class="profile-avatar">
-                ⭐
-            </div>
-
-            <h3 id="playerName">
-                Игрок
-            </h3>
-
-            <p>
-                Уровень 1
-            </p>
-
-            <div class="profile-stats">
-
-                <div>
-                    <b id="profileCards">
-                        0
-                    </b>
-
-                    <small>
-                        Карт
-                    </small>
-                </div>
-
-                <div>
-                    <b id="profileCoins">
-                        100
-                    </b>
-
-                    <small>
-                        Монет
-                    </small>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- REWARDS -->
-    <section
-        id="rewardsPage"
-        class="page hidden"
-    >
-
-        <button
-            class="back-button"
-            data-home
-        >
-            ← Назад
-        </button>
-
-        <h2>
-            🎁 Награды
-        </h2>
-
-        <div class="reward-card">
-
-            <span>
-                🎁
-            </span>
+        <div class="page-header">
 
             <div>
-                <b>
-                    Ежедневная награда
-                </b>
+                <span class="eyebrow">
+                    PLAYER PROFILE
+                </span>
 
-                <small>
-                    Скоро будет доступна
-                </small>
+                <h2>PROFILE</h2>
             </div>
 
         </div>
 
-    </section>
+
+        <section class="profile-hero">
+
+            <div class="profile-avatar">
+                <span id="profileInitial">S</span>
+            </div>
+
+            <div class="profile-name">
+
+                <h3 id="playerName">
+                    Star Player
+                </h3>
+
+                <span>
+                    LEVEL 1 · ROOKIE
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <div class="profile-stats">
+
+            <div>
+                <strong id="profileCards">
+                    0
+                </strong>
+
+                <span>
+                    CARDS
+                </span>
+            </div>
+
+            <div>
+                <strong id="profileCoins">
+                    100
+                </strong>
+
+                <span>
+                    COINS
+                </span>
+            </div>
+
+            <div>
+                <strong>0</strong>
+
+                <span>
+                    WINS
+                </span>
+            </div>
+
+        </div>
+
+
+        <section class="profile-menu">
+
+            <button>
+                <span>ACCOUNT</span>
+                <b>›</b>
+            </button>
+
+            <button>
+                <span>ACHIEVEMENTS</span>
+                <b>›</b>
+            </button>
+
+            <button>
+                <span>REFERRALS</span>
+                <b>›</b>
+            </button>
+
+            <button>
+                <span>SETTINGS</span>
+                <b>›</b>
+            </button>
+
+        </section>
+
+    </main>
 
 
     <!-- BOTTOM NAV -->
@@ -387,63 +584,40 @@
             class="nav-item active"
             data-page="home"
         >
-
-            <span>
-                🏠
-            </span>
-
-            <small>
-                Главная
-            </small>
-
+            <span>⌂</span>
+            <small>HOME</small>
         </button>
-
 
         <button
             class="nav-item"
             data-page="collection"
         >
-
-            <span>
-                📚
-            </span>
-
-            <small>
-                Коллекция
-            </small>
-
+            <span>◇</span>
+            <small>CARDS</small>
         </button>
 
-
         <button
-            class="nav-item"
+            class="nav-item nav-main"
             data-page="packs"
         >
-
-            <span>
-                🎴
-            </span>
-
-            <small>
-                Паки
-            </small>
-
+            <span>+</span>
+            <small>PACK</small>
         </button>
-
 
         <button
             class="nav-item"
-            data-page="profile"
+            data-page="battles"
         >
+            <span>⚔</span>
+            <small>BATTLES</small>
+        </button>
 
-            <span>
-                👤
-            </span>
-
-            <small>
-                Профиль
-            </small>
-
+        <button
+            class="nav-item"
+            data-page="market"
+        >
+            <span>▱</span>
+            <small>MARKET</small>
         </button>
 
     </nav>
