@@ -1,5 +1,9 @@
-```javascript
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram?.WebApp;
+
+if (tg) {
+    tg.ready();
+    tg.expand();
+}
 
 // Сообщаем Telegram, что приложение готово
 tg.ready();
