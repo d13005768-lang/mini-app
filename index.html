@@ -3,130 +3,113 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     >
 
-    <meta name="theme-color" content="#0A0A1A">
-
     <title>StarCard Legends</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Montserrat:wght@700;800;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
         rel="stylesheet"
     >
 
     <link rel="stylesheet" href="style.css">
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- TOP -->
-    <header class="topbar">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-mark">S</div>
 
-        <div class="brand">
-            <div class="brand-mark">SC</div>
-
-            <div class="brand-text">
-                <strong>STARCARD</strong>
-                <span>LEGENDS</span>
+            <div>
+                <div class="logo-title">STARCARD</div>
+                <div class="logo-subtitle">LEGENDS</div>
             </div>
         </div>
 
-        <button class="profile-mini" data-page="profile">
-            <span id="headerAvatar">S</span>
+        <button class="avatar-button" id="profileButton">
+            S
         </button>
-
     </header>
 
 
-    <!-- MAIN -->
-    <main id="homePage" class="page home-page">
+    <!-- BALANCES -->
+    <section class="balances">
 
-        <!-- BALANCE -->
-        <section class="balance-panel">
+        <div class="balance balance-coins">
+            <span class="balance-label">COINS</span>
 
-            <div class="balance-main">
+            <strong id="coins">
+                1 000
+            </strong>
 
-                <span class="balance-label">
-                    TOTAL BALANCE
+            <span class="balance-icon">●</span>
+        </div>
+
+        <div class="balance balance-stars">
+            <span class="balance-label">STARS</span>
+
+            <strong id="stars">
+                0
+            </strong>
+
+            <span class="balance-icon">★</span>
+        </div>
+
+    </section>
+
+
+    <!-- HOME -->
+    <main id="homePage" class="page">
+
+        <section class="hero">
+
+            <div class="hero-background"></div>
+
+            <div class="hero-content">
+
+                <span class="label">
+                    SEASON 01
                 </span>
 
-                <div class="balance-value">
-                    <span id="coins">100</span>
-                    <small>COINS</small>
-                </div>
+                <h1>
+                    STAR<br>
+                    <span>CARD</span>
+                </h1>
 
-            </div>
+                <p>
+                    Collect. Battle. Become a Legend.
+                </p>
 
-            <div class="balance-side">
+                <div class="hero-stats">
 
-                <span class="star-symbol">✦</span>
-
-                <div>
-                    <strong id="stars">0</strong>
-                    <small>STARS</small>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SEASON -->
-        <section class="season-card">
-
-            <div class="season-glow"></div>
-
-            <div class="season-top">
-
-                <div>
-                    <span class="eyebrow">
-                        CURRENT SEASON
-                    </span>
-
-                    <h1>
-                        NEON<br>
-                        ASCENSION
-                    </h1>
-                </div>
-
-                <span class="season-number">
-                    S01
-                </span>
-
-            </div>
-
-            <div class="season-bottom">
-
-                <div class="season-progress">
-
-                    <div class="progress-info">
-                        <span>Season progress</span>
-                        <strong>12%</strong>
+                    <div>
+                        <strong id="homeCards">0</strong>
+                        <span>CARDS</span>
                     </div>
 
-                    <div class="progress-bar">
-                        <div
-                            class="progress-fill"
-                            style="width: 12%"
-                        ></div>
+                    <div>
+                        <strong id="homeWins">0</strong>
+                        <span>WINS</span>
+                    </div>
+
+                    <div>
+                        <strong id="homeLevel">1</strong>
+                        <span>LEVEL</span>
                     </div>
 
                 </div>
-
-                <button class="season-button">
-                    VIEW
-                </button>
 
             </div>
 
@@ -134,86 +117,70 @@
 
 
         <!-- PACK -->
-        <section class="pack-section">
+        <section class="section">
 
-            <div class="section-heading">
+            <div class="section-header">
 
                 <div>
-                    <span class="eyebrow">
-                        FEATURED DROP
-                    </span>
-
-                    <h2>
-                        LEGENDARY PACK
-                    </h2>
+                    <span class="label">COLLECTION</span>
+                    <h2>Open a Pack</h2>
                 </div>
 
-                <span class="pack-tag">
-                    LIMITED
+                <span class="pack-price">
+                    50 ●
                 </span>
 
             </div>
 
 
-            <div class="pack-card">
+            <div class="pack">
 
-                <div class="pack-art">
+                <div class="pack-visual">
 
-                    <div class="pack-ring ring-one"></div>
-                    <div class="pack-ring ring-two"></div>
+                    <div class="pack-circle circle-one"></div>
+                    <div class="pack-circle circle-two"></div>
 
-                    <div class="pack-core">
+                    <div class="pack-box">
                         <span>SC</span>
                     </div>
-
-                    <div class="pack-particle particle-one"></div>
-                    <div class="pack-particle particle-two"></div>
-                    <div class="pack-particle particle-three"></div>
 
                 </div>
 
 
                 <div class="pack-info">
 
-                    <div class="pack-title">
-                        <strong>
-                            LEGENDS DROP #01
-                        </strong>
+                    <h3>LEGENDS PACK</h3>
 
-                        <span>
-                            5 CARDS
-                        </span>
-                    </div>
+                    <p>
+                        5 random cards
+                    </p>
 
-                    <div class="rarity-row">
+                    <div class="rarities">
 
-                        <span class="rarity common">
-                            COMMON
+                        <span class="common">
+                            COMMON 70%
                         </span>
 
-                        <span class="rarity rare">
-                            RARE
+                        <span class="rare">
+                            RARE 20%
                         </span>
 
-                        <span class="rarity epic">
-                            EPIC
+                        <span class="epic">
+                            EPIC 8%
                         </span>
 
-                        <span class="rarity legendary">
-                            LEGENDARY
+                        <span class="legendary">
+                            LEGENDARY 2%
                         </span>
 
                     </div>
 
                     <button
+                        class="main-button"
                         id="openPack"
-                        class="primary-button"
                     >
                         <span>OPEN PACK</span>
-
-                        <strong>
-                            10 <i>◈</i>
-                        </strong>
+                        <b>50 ●</b>
                     </button>
 
                 </div>
@@ -223,108 +190,66 @@
         </section>
 
 
-        <!-- STATS -->
-        <section class="stats-grid">
-
-            <div class="stat-card">
-
-                <span class="stat-icon">
-                    ◈
-                </span>
-
-                <div>
-                    <strong id="cards">0</strong>
-                    <small>CARDS</small>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span class="stat-icon">
-                    ◇
-                </span>
-
-                <div>
-                    <strong>1</strong>
-                    <small>LEVEL</small>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <span class="stat-icon">
-                    #
-                </span>
-
-                <div>
-                    <strong>0</strong>
-                    <small>WINS</small>
-                </div>
-
-            </div>
-
-        </section>
-
-
         <!-- DAILY -->
-        <section class="daily-card">
+        <section class="section">
 
-            <div class="daily-copy">
-
-                <span class="eyebrow">
-                    DAILY MISSION
-                </span>
-
-                <h3>
-                    Open your first pack
-                </h3>
-
-                <p>
-                    Complete the mission and receive
-                    a reward.
-                </p>
-
+            <div class="section-header">
+                <div>
+                    <span class="label">DAILY</span>
+                    <h2>Daily Mission</h2>
+                </div>
             </div>
 
-            <div class="daily-reward">
-                <strong>+25</strong>
-                <span>COINS</span>
-            </div>
+            <button
+                class="mission"
+                id="dailyMission"
+            >
+
+                <div class="mission-icon">
+                    ✓
+                </div>
+
+                <div class="mission-text">
+                    <strong>
+                        Open the game
+                    </strong>
+
+                    <span>
+                        Get your daily reward
+                    </span>
+                </div>
+
+                <div class="mission-reward">
+                    +100
+                    <small>COINS</small>
+                </div>
+
+            </button>
 
         </section>
 
     </main>
 
 
-    <!-- CARDS -->
+    <!-- COLLECTION -->
     <main
         id="collectionPage"
         class="page hidden"
     >
 
-        <div class="page-header">
+        <div class="page-title">
+            <span class="label">MY COLLECTION</span>
 
-            <div>
-                <span class="eyebrow">
-                    YOUR COLLECTION
-                </span>
+            <h2>Cards</h2>
 
-                <h2>CARDS</h2>
-            </div>
-
-            <span class="collection-count">
-                <b id="collectionCount">0</b> / 100
+            <span class="counter">
+                <b id="collectionCount">0</b> cards
             </span>
-
         </div>
 
         <div
             id="collectionContainer"
-            class="collection-grid"
+            class="cards-grid"
         ></div>
 
     </main>
@@ -336,77 +261,71 @@
         class="page hidden"
     >
 
-        <div class="page-header">
-
-            <div>
-                <span class="eyebrow">
-                    COMPETE
-                </span>
-
-                <h2>BATTLES</h2>
-            </div>
-
+        <div class="page-title">
+            <span class="label">COMPETE</span>
+            <h2>Battles</h2>
         </div>
 
+        <section class="battle-card">
 
-        <section class="battle-feature">
-
-            <span class="battle-status">
-                LIVE
+            <span class="battle-live">
+                ● LIVE
             </span>
 
-            <h3>
-                QUICK DUEL
-            </h3>
+            <h2>
+                1 VS 1
+            </h2>
 
             <p>
-                Choose your strongest card
-                and challenge another player.
+                Choose your strongest card and
+                fight another player.
             </p>
 
-            <button class="primary-button">
+            <button
+                class="main-button"
+                id="battleButton"
+            >
                 FIND OPPONENT
             </button>
 
         </section>
 
 
-        <div class="battle-modes">
+        <div class="battle-list">
 
-            <button class="mode-card">
-
+            <button class="battle-mode">
                 <span>01</span>
 
-                <strong>DUEL</strong>
+                <div>
+                    <strong>Quick Battle</strong>
+                    <small>Free entry</small>
+                </div>
 
-                <small>
-                    1 × 1
-                </small>
-
+                <b>›</b>
             </button>
 
-            <button class="mode-card">
 
+            <button class="battle-mode">
                 <span>02</span>
 
-                <strong>TOURNAMENT</strong>
+                <div>
+                    <strong>Star Battle</strong>
+                    <small>Entry: 10 Stars</small>
+                </div>
 
-                <small>
-                    8 PLAYERS
-                </small>
-
+                <b>›</b>
             </button>
 
-            <button class="mode-card">
 
+            <button class="battle-mode">
                 <span>03</span>
 
-                <strong>CLAN WAR</strong>
+                <div>
+                    <strong>Tournament</strong>
+                    <small>Coming soon</small>
+                </div>
 
-                <small>
-                    5 × 5
-                </small>
-
+                <b>›</b>
             </button>
 
         </div>
@@ -420,20 +339,9 @@
         class="page hidden"
     >
 
-        <div class="page-header">
-
-            <div>
-                <span class="eyebrow">
-                    PLAYER MARKET
-                </span>
-
-                <h2>MARKET</h2>
-            </div>
-
-            <button class="filter-button">
-                FILTER
-            </button>
-
+        <div class="page-title">
+            <span class="label">TRADE</span>
+            <h2>Market</h2>
         </div>
 
 
@@ -458,21 +366,21 @@
         </div>
 
 
-        <div class="market-empty">
+        <section class="empty-market">
 
-            <div class="empty-mark">
+            <div class="empty-icon">
                 ◇
             </div>
 
             <h3>
-                MARKET IS EMPTY
+                Market is empty
             </h3>
 
             <p>
                 Player listings will appear here.
             </p>
 
-        </div>
+        </section>
 
     </main>
 
@@ -483,33 +391,29 @@
         class="page hidden"
     >
 
-        <div class="page-header">
-
-            <div>
-                <span class="eyebrow">
-                    PLAYER PROFILE
-                </span>
-
-                <h2>PROFILE</h2>
-            </div>
-
+        <div class="page-title">
+            <span class="label">PLAYER</span>
+            <h2>Profile</h2>
         </div>
 
 
-        <section class="profile-hero">
+        <section class="profile-card">
 
-            <div class="profile-avatar">
-                <span id="profileInitial">S</span>
+            <div
+                class="profile-avatar"
+                id="profileAvatar"
+            >
+                S
             </div>
 
-            <div class="profile-name">
+            <div class="profile-info">
 
                 <h3 id="playerName">
                     Star Player
                 </h3>
 
                 <span>
-                    LEVEL 1 · ROOKIE
+                    LEGEND · LEVEL 1
                 </span>
 
             </div>
@@ -523,62 +427,50 @@
                 <strong id="profileCards">
                     0
                 </strong>
+                <span>CARDS</span>
+            </div>
 
-                <span>
-                    CARDS
-                </span>
+            <div>
+                <strong id="profileWins">
+                    0
+                </strong>
+                <span>WINS</span>
             </div>
 
             <div>
                 <strong id="profileCoins">
-                    100
+                    1 000
                 </strong>
-
-                <span>
-                    COINS
-                </span>
-            </div>
-
-            <div>
-                <strong>0</strong>
-
-                <span>
-                    WINS
-                </span>
+                <span>COINS</span>
             </div>
 
         </div>
 
 
-        <section class="profile-menu">
+        <div class="profile-menu">
 
             <button>
-                <span>ACCOUNT</span>
+                <span>Achievements</span>
                 <b>›</b>
             </button>
 
             <button>
-                <span>ACHIEVEMENTS</span>
+                <span>Referral program</span>
                 <b>›</b>
             </button>
 
             <button>
-                <span>REFERRALS</span>
+                <span>Withdraw Stars</span>
                 <b>›</b>
             </button>
 
-            <button>
-                <span>SETTINGS</span>
-                <b>›</b>
-            </button>
-
-        </section>
+        </div>
 
     </main>
 
 
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
+    <!-- NAVIGATION -->
+    <nav class="navigation">
 
         <button
             class="nav-item active"
@@ -588,6 +480,7 @@
             <small>HOME</small>
         </button>
 
+
         <button
             class="nav-item"
             data-page="collection"
@@ -596,13 +489,14 @@
             <small>CARDS</small>
         </button>
 
+
         <button
-            class="nav-item nav-main"
-            data-page="packs"
+            class="nav-item nav-center"
+            data-page="home"
         >
-            <span>+</span>
-            <small>PACK</small>
+            <span>★</span>
         </button>
+
 
         <button
             class="nav-item"
@@ -612,11 +506,12 @@
             <small>BATTLES</small>
         </button>
 
+
         <button
             class="nav-item"
             data-page="market"
         >
-            <span>▱</span>
+            <span>◫</span>
             <small>MARKET</small>
         </button>
 
