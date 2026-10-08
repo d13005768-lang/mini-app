@@ -3,6 +3,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -17,126 +18,440 @@
 
 <body>
 
-    <div class="app">
+<div class="app">
 
-        <header class="topbar">
-            <div>
-                <div class="logo">⭐ StarCard</div>
-                <div class="subtitle">LEGENDS</div>
-            </div>
+    <!-- HEADER -->
+    <header class="topbar">
 
-            <div class="coins">
-                💰 <span id="coins">0</span>
-            </div>
-        </header>
+        <div class="brand">
+            <div class="logo">⭐ StarCard</div>
+            <div class="subtitle">LEGENDS</div>
+        </div>
 
+        <div class="coins">
+            💰 <span id="coins">100</span>
+        </div>
 
-        <main>
-
-            <section class="hero">
-                <div class="hero-star">⭐</div>
-
-                <h1>StarCard Legends</h1>
-
-                <p>
-                    Собирай легендарные карты
-                    и создай свою коллекцию.
-                </p>
-
-                <button class="pack-button" id="openPack">
-                    🎴 ОТКРЫТЬ ПАК
-                </button>
-            </section>
+    </header>
 
 
-            <section class="stats">
+    <!-- HOME -->
+    <main id="homePage">
 
-                <div class="stat">
-                    <span>🎴</span>
-                    <strong id="cards">0</strong>
-                    <small>Карт</small>
-                </div>
+        <section class="hero">
 
-                <div class="stat">
-                    <span>⭐</span>
-                    <strong>1</strong>
-                    <small>Уровень</small>
-                </div>
+            <div class="hero-star">⭐</div>
 
-                <div class="stat">
-                    <span>🏆</span>
-                    <strong>0</strong>
-                    <small>Побед</small>
-                </div>
+            <h1>StarCard Legends</h1>
 
-            </section>
+            <p>
+                Собирай легендарные карты,
+                открывай паки и пополняй коллекцию.
+            </p>
 
-
-            <section class="section">
-
-                <h2>⚡ Быстрый доступ</h2>
-
-                <div class="menu-grid">
-
-                    <button class="menu-card">
-                        <span>📚</span>
-                        <b>Коллекция</b>
-                        <small>Твои карты</small>
-                    </button>
-
-                    <button class="menu-card">
-                        <span>🏆</span>
-                        <b>Рейтинг</b>
-                        <small>Лучшие игроки</small>
-                    </button>
-
-                    <button class="menu-card">
-                        <span>🎁</span>
-                        <b>Награды</b>
-                        <small>Получи бонус</small>
-                    </button>
-
-                    <button class="menu-card">
-                        <span>👤</span>
-                        <b>Профиль</b>
-                        <small>Твой аккаунт</small>
-                    </button>
-
-                </div>
-
-            </section>
-
-        </main>
-
-
-        <nav class="bottom-nav">
-
-            <button class="nav-item active">
-                <span>🏠</span>
-                <small>Главная</small>
+            <button
+                class="pack-button"
+                id="openPack"
+            >
+                🎴 ОТКРЫТЬ ПАК
             </button>
 
-            <button class="nav-item">
-                <span>📚</span>
-                <small>Коллекция</small>
-            </button>
+            <div class="pack-price">
+                Стоимость: 💰 10
+            </div>
 
-            <button class="nav-item">
+        </section>
+
+
+        <!-- STATS -->
+        <section class="stats">
+
+            <div class="stat">
+
                 <span>🎴</span>
-                <small>Паки</small>
-            </button>
 
-            <button class="nav-item">
-                <span>👤</span>
-                <small>Профиль</small>
-            </button>
+                <strong id="cards">
+                    0
+                </strong>
 
-        </nav>
+                <small>
+                    Карт
+                </small>
 
-    </div>
+            </div>
 
 
-    <script src="app.js"></script>
+            <div class="stat">
+
+                <span>⭐</span>
+
+                <strong>
+                    1
+                </strong>
+
+                <small>
+                    Уровень
+                </small>
+
+            </div>
+
+
+            <div class="stat">
+
+                <span>💰</span>
+
+                <strong id="coinsStat">
+                    100
+                </strong>
+
+                <small>
+                    Монеты
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUICK ACCESS -->
+        <section class="section">
+
+            <h2>
+                ⚡ Быстрый доступ
+            </h2>
+
+
+            <div class="menu-grid">
+
+                <button
+                    class="menu-card"
+                    data-page="collection"
+                >
+
+                    <span>
+                        📚
+                    </span>
+
+                    <b>
+                        Коллекция
+                    </b>
+
+                    <small>
+                        Твои карты
+                    </small>
+
+                </button>
+
+
+                <button
+                    class="menu-card"
+                    data-page="packs"
+                >
+
+                    <span>
+                        🎴
+                    </span>
+
+                    <b>
+                        Паки
+                    </b>
+
+                    <small>
+                        Открывай паки
+                    </small>
+
+                </button>
+
+
+                <button
+                    class="menu-card"
+                    data-page="rewards"
+                >
+
+                    <span>
+                        🎁
+                    </span>
+
+                    <b>
+                        Награды
+                    </b>
+
+                    <small>
+                        Получай бонусы
+                    </small>
+
+                </button>
+
+
+                <button
+                    class="menu-card"
+                    data-page="profile"
+                >
+
+                    <span>
+                        👤
+                    </span>
+
+                    <b>
+                        Профиль
+                    </b>
+
+                    <small>
+                        Твой аккаунт
+                    </small>
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- PACK RESULT -->
+    <section
+        id="packPage"
+        class="page hidden"
+    >
+
+        <button
+            class="back-button"
+            id="backHome"
+        >
+            ← Назад
+        </button>
+
+        <div class="pack-result">
+
+            <div class="pack-icon">
+                🎴
+            </div>
+
+            <h2>
+                Пак открыт!
+            </h2>
+
+            <p>
+                Ты получил 5 новых карт
+            </p>
+
+        </div>
+
+
+        <div
+            id="cardsContainer"
+            class="cards-container"
+        >
+        </div>
+
+
+        <button
+            class="pack-button"
+            id="openAnotherPack"
+        >
+            🎴 ОТКРЫТЬ ЕЩЁ
+        </button>
+
+    </section>
+
+
+    <!-- COLLECTION -->
+    <section
+        id="collectionPage"
+        class="page hidden"
+    >
+
+        <button
+            class="back-button"
+            data-home
+        >
+            ← Назад
+        </button>
+
+        <h2>
+            📚 Моя коллекция
+        </h2>
+
+        <div
+            id="collectionContainer"
+            class="collection-container"
+        >
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE -->
+    <section
+        id="profilePage"
+        class="page hidden"
+    >
+
+        <button
+            class="back-button"
+            data-home
+        >
+            ← Назад
+        </button>
+
+        <h2>
+            👤 Профиль
+        </h2>
+
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+                ⭐
+            </div>
+
+            <h3 id="playerName">
+                Игрок
+            </h3>
+
+            <p>
+                Уровень 1
+            </p>
+
+            <div class="profile-stats">
+
+                <div>
+                    <b id="profileCards">
+                        0
+                    </b>
+
+                    <small>
+                        Карт
+                    </small>
+                </div>
+
+                <div>
+                    <b id="profileCoins">
+                        100
+                    </b>
+
+                    <small>
+                        Монет
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- REWARDS -->
+    <section
+        id="rewardsPage"
+        class="page hidden"
+    >
+
+        <button
+            class="back-button"
+            data-home
+        >
+            ← Назад
+        </button>
+
+        <h2>
+            🎁 Награды
+        </h2>
+
+        <div class="reward-card">
+
+            <span>
+                🎁
+            </span>
+
+            <div>
+                <b>
+                    Ежедневная награда
+                </b>
+
+                <small>
+                    Скоро будет доступна
+                </small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-item active"
+            data-page="home"
+        >
+
+            <span>
+                🏠
+            </span>
+
+            <small>
+                Главная
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="collection"
+        >
+
+            <span>
+                📚
+            </span>
+
+            <small>
+                Коллекция
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="packs"
+        >
+
+            <span>
+                🎴
+            </span>
+
+            <small>
+                Паки
+            </small>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="profile"
+        >
+
+            <span>
+                👤
+            </span>
+
+            <small>
+                Профиль
+            </small>
+
+        </button>
+
+    </nav>
+
+</div>
+
+
+<script src="app.js"></script>
 
 </body>
 </html>
