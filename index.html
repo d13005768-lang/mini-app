@@ -3,224 +3,575 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10131c">
   <title>Username Finder</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 20px;
-      background: var(--tg-theme-bg-color, #10131b);
-      color: var(--tg-theme-text-color, #fff);
-      font: 16px Arial, sans-serif;
+      padding: 22px 16px 35px;
+      background: #10131c;
+      color: #f4f5fb;
+      font-family: Arial, sans-serif;
     }
 
-    main { max-width: 480px; margin: 0 auto; }
-    h1 { font-size: 26px; }
-    p { line-height: 1.5; }
+    .app {
+      max-width: 540px;
+      margin: 0 auto;
+    }
 
-    select, button {
+    .header {
+      text-align: center;
+      margin: 12px 0 26px;
+    }
+
+    .logo {
+      font-size: 43px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 27px;
+      margin: 0 0 9px;
+    }
+
+    .subtitle {
+      color: #9da5bb;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .panel {
+      background: #191e2b;
+      border: 1px solid #2a3144;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #b9c0d3;
+      margin-bottom: 10px;
+    }
+
+    select,
+    button {
       width: 100%;
-      padding: 14px;
-      margin: 8px 0;
       border: 0;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
+      padding: 14px;
     }
 
     select {
-      background: var(--tg-theme-secondary-bg-color, #202637);
-      color: var(--tg-theme-text-color, white);
+      background: #252c3d;
+      color: white;
+      outline: none;
+      margin-bottom: 14px;
     }
 
     button {
-      background: var(--tg-theme-button-color, #5288ff);
-      color: var(--tg-theme-button-text-color, white);
       cursor: pointer;
+      font-weight: bold;
+      transition: opacity 0.15s;
     }
 
-    .item {
+    button:active {
+      opacity: 0.75;
+    }
+
+    .primary {
+      background: #6c75f5;
+      color: white;
+    }
+
+    .secondary {
+      background: #252c3d;
+      color: #e4e8f5;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .status {
+      color: #aeb6cb;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 13px 0 0;
+      text-align: center;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 23px 2px 12px;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .counter {
+      color: #9da5bb;
+      font-size: 12px;
+    }
+
+    .result {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      gap: 10px;
+      background: #191e2b;
+      border: 1px solid #2a3144;
+      border-radius: 14px;
       padding: 12px;
-      margin-top: 9px;
-      border-radius: 12px;
-      background: var(--tg-theme-secondary-bg-color, #202637);
+      margin-bottom: 9px;
     }
 
-    .name { font-size: 20px; font-weight: bold; }
-    .note {
-      font-size: 12px;
-      color: var(--tg-theme-hint-color, #aab2c5);
-      margin-top: 4px;
+    .word {
+      flex: 1;
+      min-width: 0;
     }
 
-    .copy {
+    .username {
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      overflow-wrap: anywhere;
+    }
+
+    .word-note {
+      color: #8e98b0;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .mini-btn {
       width: auto;
-      flex-shrink: 0;
-      margin: 0;
-      padding: 10px 13px;
+      padding: 10px 11px;
+      background: #2a3247;
+      color: #e5e9ff;
+      font-size: 12px;
     }
 
-    .hint { font-size: 13px; opacity: .8; }
+    .empty {
+      color: #b6bfd4;
+      text-align: center;
+      line-height: 1.6;
+      padding: 18px 4px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #778198;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 22px;
+    }
+
+    .footer a {
+      color: #aeb5ff;
+    }
   </style>
 </head>
+
 <body>
-<main>
-  <h1>✨ Username Finder</h1>
-  <p>Редкие слова и красивые имена из пяти латинских букв.</p>
+  <main class="app">
+    <header class="header">
+      <div class="logo">✦</div>
+      <h1>Username Finder</h1>
+      <div class="subtitle">
+        Найди короткое имя из пяти букв.<br>
+        Новые подборки без недавних повторов.
+      </div>
+    </header>
 
-  <select id="style">
-    <option value="all">Все категории</option>
-    <option value="english">Редкие английские слова</option>
-    <option value="russian">Русские слова латиницей</option>
-    <option value="madeup">Выдуманные имена</option>
-  </select>
+    <section class="panel">
+      <label for="category">Какой стиль имени ищем?</label>
 
-  <button id="generate">Найти варианты</button>
-  <p id="status" class="note" aria-live="polite"></p>
-  <section id="results"></section>
-  <p class="hint">
-    Варианты не проверены в Telegram. Редкое слово не обязательно свободно.
-  </p>
-</main>
+      <select id="category">
+        <option value="all">✨ Все варианты</option>
+        <option value="english">📚 Английские слова</option>
+        <option value="russian">🌙 Русские слова латиницей</option>
+        <option value="aesthetic">💎 Красивые имена</option>
+        <option value="rare">🪐 Необычные сочетания</option>
+      </select>
 
-<script>
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
-  tg?.expand();
+      <label for="amount">Сколько вариантов показать?</label>
 
-  const words = {
-    english: [
-      "acorn", "aloft", "amber", "ashen", "axiom",
-      "basil", "beryl", "brink", "cairn", "cedar",
-      "chasm", "cider", "coral", "covet", "crane",
-      "croft", "delft", "delta", "droll", "ember",
-      "epoch", "facet", "fable", "feral", "fjord",
-      "flint", "flora", "gazer", "gleny", "gloom",
-      "havoc", "heron", "honey", "inlet", "ivory",
-      "jaunt", "karma", "knoll", "lilac", "lumen",
-      "maple", "mirth", "mocha", "mossy", "myrrh",
-      "naive", "niche", "nymph", "ochre", "olive",
-      "opium", "orbit", "otter", "oxide", "pansy",
-      "pearl", "pecan", "pesto", "petal", "plume",
-      "quail", "quirk", "realm", "relic", "rivet",
-      "roost", "rowan", "sable", "satin", "sepia",
-      "shire", "siren", "slate", "smirk", "sonar",
-      "spelt", "spore", "sprig", "stork", "surge",
-      "tacit", "tempo", "thrum", "topaz", "umbra",
-      "vapor", "velum", "verve", "vigil", "waltz",
-      "weald", "wisp", "woven", "xylem", "yearn",
-      "yucca", "zesty", "zonal"
-    ],
+      <select id="amount">
+        <option value="10">10 вариантов</option>
+        <option value="15" selected>15 вариантов</option>
+        <option value="20">20 вариантов</option>
+        <option value="30">30 вариантов</option>
+      </select>
 
-    russian: [
-      "dacha", "davno", "dekor", "dengi", "dozhd",
-      "duplo", "dyshi", "iskra", "kamin", "karta",
-      "kazan", "kniga", "koala", "krasa", "krilo",
-      "kusty", "laska", "lesok", "listy", "luchi",
-      "lutik", "malva", "mango", "mecha", "metel",
-      "mirny", "morel", "moroz", "motiv", "myata",
-      "nevod", "norka", "oblak", "ogony", "okapi",
-      "oseny", "otrad", "pchel", "pesny", "plamy",
-      "polka", "prana", "prism", "radar", "radug",
-      "reika", "riska", "rosha", "rubin", "rybak",
-      "sazha", "sever", "siren", "skala", "slava",
-      "smola", "snezh", "sonet", "sosna", "sreda",
-      "stena", "taiga", "tuman", "tykva", "uzory",
-      "valun", "vecher", "vetka", "vinta", "volna",
-      "vysot", "zakat", "zerno", "zefir", "zoria"
-    ],
+      <button class="primary" id="generate">
+        ✨ Сгенерировать имена
+      </button>
 
-    madeup: [
-      "aevon", "alvyn", "arven", "avelo", "azuri",
-      "belvo", "caeli", "calyx", "dovik", "elvar",
-      "elvyn", "evori", "faelo", "feyra", "kaelo",
-      "kelvo", "korvi", "laero", "levox", "liora",
-      "loren", "luven", "maevo", "mevra", "naelo",
-      "navir", "nelvo", "nexor", "nyvra", "orvyn",
-      "ovelo", "raelo", "ravik", "revia", "rivon",
-      "saeli", "selvo", "sovra", "taelo", "tavik",
-      "ulvyn", "vaelo", "velto", "verix", "vexor",
-      "viora", "virel", "xelvo", "xevra", "yavik",
-      "yovra", "zaelo", "zayro", "zelvi", "zevra",
-      "zoria", "zyven", "lunex", "sylvo", "novix",
-      "orixa", "vaylo", "elora", "mirel", "nuvia"
-    ]
-  };
+      <div class="controls">
+        <button class="secondary" id="copyAll">
+          Копировать список
+        </button>
+        <button class="secondary" id="resetHistory">
+          Сбросить историю
+        </button>
+      </div>
 
-  const valid = name => /^[a-z]{5}$/.test(name);
+      <p class="status" id="status">
+        Повторы исключаются среди последних 5 подборок.
+      </p>
+    </section>
 
-  function shuffle(list) {
-    const result = [...list];
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-    return result;
-  }
+    <div class="results-header">
+      <h2>Твои варианты</h2>
+      <span class="counter" id="counter">0 имён</span>
+    </div>
 
-  function pickNames() {
-    const selected = document.getElementById("style").value;
-    const pool = selected === "all"
-      ? Object.values(words).flat()
-      : words[selected];
+    <section id="results">
+      <div class="panel empty">
+        Нажми «Сгенерировать имена», чтобы начать.
+      </div>
+    </section>
 
-    return shuffle([...new Set(pool.filter(valid))]).slice(0, 15);
-  }
+    <footer class="footer">
+      Генератор не проверяет доступность имён.<br>
+      Перед выбором проверь имя в Telegram.
+    </footer>
+  </main>
 
-  document.getElementById("generate").onclick = () => {
-    const results = document.getElementById("results");
-    const status = document.getElementById("status");
-    results.replaceChildren();
+  <script>
+    const HISTORY_KEY = "usernameFinderHistoryV2";
 
-    const names = pickNames();
+    // Английские слова из пяти букв.
+    const englishWords = `
+      amber apple beach bloom blush brave bread breeze brick
+      bride bring broad brown brush cabin candy charm chase
+      cheer cherry chess chest chief child chill chime choir
+      clean clear clerk cliff climb clock cloud clown coast
+      coral couch could count craft crane crash cream creek
+      crisp crown dance dream dress drift drink drive earth
+      elite empty enjoy entry equal error event faith fairy
+      fancy fault feast fence fever field flame flash fleet
+      flesh float flood flour focus force forest found frame
+      fresh front fruit funny ghost giant given glass globe
+      glory grace grade grain grand grape graph grass green
+      greet grief grind group guard guess guest guide habit
+      happy heart honey horse hotel house human humor ideal
+      image index inner input ivory jewel joint judge juice
+      knife known label laser later laugh layer learn lemon
+      level light limit linen liver local logic loose lotus
+      lucky lunar magic mango maple march match maybe medal
+      mercy metal might minor model money month moral motor
+      mount mouse mouth music nerve never night noble noise
+      north novel nurse ocean offer often olive opera orbit
+      order organ other outer owner paint panel paper party
+      peace pearl phase phone photo piano piece pilot pitch
+      pixel place plain plane plant plate point polar pound
+      power press price pride prime print prize proof proud
+      queen quest quick quiet quite radar radio raise range
+      rapid ratio reach react ready relax reply right river
+      roast robin rocky round route royal ruler rural salad
+      scale scene scent scope score sense serve seven shade
+      shaft shape share sharp sheep sheer sheet shelf shell
+      shift shine shirt shock shore short shown sight since
+      skill sleep slice slide slope small smart smile smoke
+      solid solve sound south space spare spark speak speed
+      spell spend spice spice spine spirit split sport spray
+      stack staff stage stain stair stake stand start state
+      steam steel steep still stock stone store storm story
+      strip study style sugar suite super sweet swift table
+      taste teach their theme there thick thing think third
+      those three throw tiger tight timer title today token
+      topic total touch tough tower trace track trade trail
+      train treat trend trial tribe trick trust truth twice
+      under union unity until upper urban usage usual valid
+      value video visit vital voice waste watch water wheel
+      where which while white whole whose woman world worry
+      worth write wrong young youth zephyr xylem
+    `.trim().split(/\s+/);
 
-    if (!names.length) {
-      status.textContent = "В этой категории пока нет вариантов.";
-      return;
-    }
+    // Транслитерации и короткие формы русских слов.
+    const russianWords = `
+      nochi nochu nochi luna lunny more reka reki vetra
+      vetry nebo neba zarya zare sveta svetl iskra iskor
+      ognya ogone ogoni tuman tumna rosaa rosae bereg
+      bereg volny volna volnae volna vetka vetvi lesok
+      lesna lesny listy listi snega snezh snegi zimny
+      zimna vesna vesny letom leta oseni oseno tishi
+      tisha tisho mirny mirna mirno dusha dushe dusho
+      mechta mechi tochka tochu krasa kraso krasn
+      slova slovy slovo zvuki zvuko zvona zvony pesny
+      pesna pecha radug ladno teplo tepla teple
+    `.trim().split(/\s+/);
 
-    status.textContent =
-      `Подобрано вариантов: ${names.length}. Доступность не проверена.`;
+    // Придуманные имена и эстетичные сочетания.
+    const aestheticWords = `
+      aural auria avell avira azura azuri elara elari elora
+      elune eluna elune emira enora evara evora evori
+      fiora fiore flora flori halia ilara ilora inari
+      isola ivora kaela kaeli kaira kairi kalen keira
+      kiara laira lairi liora liore liora lunea lunia
+      lyora maela maira malia melia melor meria miara
+      miloa naira nairi nalya neira nelia neria noira
+      norie nyora olina oraya oriel orina orlena
+      raela raeli riana rielle saela saeli selia serin
+      shira siana solia suela taela talia thera thora
+      ulani vaela vaeli velia verna viara viona
+      yaira yelia zaria zelia zoria zyara
+    `.trim().split(/\s+/);
 
-    for (const name of names) {
-      const item = document.createElement("div");
-      item.className = "item";
+    // Сгенерированные сочетания: большое пространство вариантов.
+    const starts = [
+      "ae", "al", "ar", "av", "az", "el", "em", "en",
+      "ev", "il", "im", "in", "iv", "ka", "ke", "ki",
+      "la", "le", "li", "lo", "lu", "ma", "me", "mi",
+      "na", "ne", "ni", "no", "ra", "re", "ri", "sa",
+      "se", "si", "so", "ta", "te", "va", "ve", "vi",
+      "ya", "ye", "za", "ze", "zo"
+    ];
 
-      const info = document.createElement("div");
-      const label = document.createElement("div");
-      label.className = "name";
-      label.textContent = "@" + name;
+    const middles = [
+      "b", "d", "f", "g", "l", "m", "n", "r", "s",
+      "v", "x", "y", "z", "th", "sh", "ch", "ph"
+    ];
 
-      const note = document.createElement("div");
-      note.className = "note";
-      note.textContent = "5 букв · кандидат";
+    const endings = [
+      "a", "e", "i", "o", "y", "en", "el", "er",
+      "ia", "is", "on", "or", "ra", "re", "yn", "yx"
+    ];
 
-      info.append(label, note);
+    const rareWords = new Set();
 
-      const copy = document.createElement("button");
-      copy.className = "copy";
-      copy.textContent = "Копировать";
+    for (const start of starts) {
+      for (const middle of middles) {
+        for (const ending of endings) {
+          const candidate = (start + middle + ending).slice(0, 5);
 
-      copy.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(name);
-          copy.textContent = "Скопировано!";
-        } catch {
-          window.prompt("Скопируй имя:", name);
+          if (/^[a-z]{5}$/.test(candidate)) {
+            rareWords.add(candidate);
+          }
         }
-      };
-
-      item.append(info, copy);
-      results.append(item);
+      }
     }
-  };
-</script>
+
+    function uniqueFiveLetterWords(list) {
+      return [...new Set(list.map(word => word.toLowerCase()))]
+        .filter(word => /^[a-z]{5}$/.test(word));
+    }
+
+    const pools = {
+      english: uniqueFiveLetterWords(englishWords),
+      russian: uniqueFiveLetterWords(russianWords),
+      aesthetic: uniqueFiveLetterWords(aestheticWords),
+      rare: uniqueFiveLetterWords([...rareWords])
+    };
+
+    pools.all = uniqueFiveLetterWords([
+      ...pools.english,
+      ...pools.russian,
+      ...pools.aesthetic,
+      ...pools.rare
+    ]);
+
+    let currentResults = [];
+
+    function getHistory() {
+      try {
+        const parsed = JSON.parse(
+          localStorage.getItem(HISTORY_KEY) || "[]"
+        );
+
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function getUsedWords() {
+      return new Set(getHistory().flat());
+    }
+
+    function rememberWords(words) {
+      const history = getHistory();
+
+      history.push([...new Set(words)]);
+
+      localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(history.slice(-5))
+      );
+    }
+
+    function shuffle(list) {
+      const result = [...list];
+
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+
+      return result;
+    }
+
+    function pluralize(count) {
+      return count === 1 ? "имя" :
+        count >= 2 && count <= 4 ? "имени" : "имён";
+    }
+
+    function generate() {
+      const category = document.getElementById("category").value;
+      const amount = Number(document.getElementById("amount").value);
+      const used = getUsedWords();
+
+      const source = pools[category] || pools.all;
+
+      // Слова, которые уже были в последних пяти подборках,
+      // временно исключаются.
+      const fresh = source.filter(word => !used.has(word));
+
+      if (fresh.length === 0) {
+        currentResults = [];
+        renderResults();
+
+        document.getElementById("status").textContent =
+          "В этой категории закончились новые варианты. " +
+          "Сбрось историю или выбери другую категорию.";
+
+        return;
+      }
+
+      currentResults = shuffle(fresh).slice(0, amount);
+
+      rememberWords(currentResults);
+      renderResults();
+
+      const remaining = Math.max(0, fresh.length - currentResults.length);
+
+      document.getElementById("status").textContent =
+        `Показано ${currentResults.length}. ` +
+        `В этой категории осталось новых вариантов: ${remaining}.`;
+    }
+
+    function renderResults() {
+      const container = document.getElementById("results");
+      const counter = document.getElementById("counter");
+
+      counter.textContent =
+        `${currentResults.length} ${pluralize(currentResults.length)}`;
+
+      if (currentResults.length === 0) {
+        container.innerHTML = `
+          <div class="panel empty">
+            Новых вариантов не найдено.<br>
+            Попробуй другую категорию или сбрось историю.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+
+      currentResults.forEach(word => {
+        const item = document.createElement("div");
+        item.className = "result";
+
+        const info = document.createElement("div");
+        info.className = "word";
+
+        const name = document.createElement("div");
+        name.className = "username";
+        name.textContent = word;
+
+        const note = document.createElement("div");
+        note.className = "word-note";
+        note.textContent = "5 букв · латиница";
+
+        info.appendChild(name);
+        info.appendChild(note);
+
+        const copyButton = document.createElement("button");
+        copyButton.className = "mini-btn";
+        copyButton.textContent = "Копировать";
+        copyButton.addEventListener("click", async () => {
+          await copyText(word);
+          copyButton.textContent = "Готово ✓";
+          setTimeout(() => {
+            copyButton.textContent = "Копировать";
+          }, 1200);
+        });
+
+        const openButton = document.createElement("button");
+        openButton.className = "mini-btn";
+        openButton.textContent = "Открыть";
+        openButton.addEventListener("click", () => {
+          window.open(
+            "https://t.me/" + encodeURIComponent(word),
+            "_blank"
+          );
+        });
+
+        item.appendChild(info);
+        item.appendChild(copyButton);
+        item.appendChild(openButton);
+        container.appendChild(item);
+      });
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+    }
+
+    document.getElementById("generate")
+      .addEventListener("click", generate);
+
+    document.getElementById("copyAll")
+      .addEventListener("click", async () => {
+        if (currentResults.length === 0) {
+          document.getElementById("status").textContent =
+            "Сначала сгенерируй список.";
+          return;
+        }
+
+        await copyText(currentResults.join("\n"));
+        document.getElementById("status").textContent =
+          "Список скопирован!";
+      });
+
+    document.getElementById("resetHistory")
+      .addEventListener("click", () => {
+        localStorage.removeItem(HISTORY_KEY);
+        document.getElementById("status").textContent =
+          "История очищена. Можно генерировать заново.";
+        generate();
+      });
+
+    generate();
+  </script>
 </body>
 </html>
 ```
