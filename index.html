@@ -3,341 +3,207 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#10131c">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Username Finder</title>
-
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      padding: 22px 16px 35px;
-      background: #10131c;
-      color: #f4f5fb;
-      font-family: Arial, sans-serif;
-    }
-
-    .app {
-      max-width: 540px;
-      margin: 0 auto;
-    }
-
-    .header {
-      text-align: center;
-      margin: 12px 0 26px;
-    }
-
-    .logo {
-      font-size: 43px;
-      margin-bottom: 8px;
-    }
-
-    h1 {
-      font-size: 27px;
-      margin: 0 0 9px;
-    }
-
-    .subtitle {
-      color: #9da5bb;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .panel {
-      background: #191e2b;
-      border: 1px solid #2a3144;
-      border-radius: 18px;
       padding: 18px;
-      margin-bottom: 17px;
+      background: var(--tg-theme-bg-color, #10131b);
+      color: var(--tg-theme-text-color, #fff);
+      font: 16px Arial, sans-serif;
     }
 
-    label {
-      display: block;
-      font-size: 14px;
-      color: #b9c0d3;
-      margin-bottom: 10px;
-    }
+    main { max-width: 520px; margin: 0 auto; }
+    h1 { font-size: 26px; margin-bottom: 8px; }
+    .muted { color: var(--tg-theme-hint-color, #aab2c5); font-size: 13px; line-height: 1.5; }
 
-    select,
-    button {
+    select, button {
       width: 100%;
+      padding: 13px;
+      margin: 7px 0;
       border: 0;
       border-radius: 12px;
       font-size: 15px;
-      padding: 14px;
     }
 
     select {
-      background: #252c3d;
-      color: white;
-      outline: none;
-      margin-bottom: 14px;
+      background: var(--tg-theme-secondary-bg-color, #202637);
+      color: var(--tg-theme-text-color, white);
     }
 
     button {
+      background: var(--tg-theme-button-color, #5288ff);
+      color: var(--tg-theme-button-text-color, white);
       cursor: pointer;
-      font-weight: bold;
-      transition: opacity 0.15s;
     }
 
-    button:active {
-      opacity: 0.75;
-    }
-
-    .primary {
-      background: #6c75f5;
-      color: white;
-    }
+    button:disabled { opacity: .5; cursor: wait; }
 
     .secondary {
-      background: #252c3d;
-      color: #e4e8f5;
+      background: var(--tg-theme-secondary-bg-color, #202637);
+      color: var(--tg-theme-text-color, white);
     }
 
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .status {
-      color: #aeb6cb;
-      font-size: 13px;
-      line-height: 1.5;
-      margin: 13px 0 0;
-      text-align: center;
-    }
-
-    .results-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin: 23px 2px 12px;
-    }
-
-    h2 {
-      font-size: 18px;
-      margin: 0;
-    }
-
-    .counter {
-      color: #9da5bb;
-      font-size: 12px;
-    }
-
-    .result {
+    .item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: #191e2b;
-      border: 1px solid #2a3144;
-      border-radius: 14px;
+      gap: 9px;
       padding: 12px;
-      margin-bottom: 9px;
+      margin-top: 9px;
+      border-radius: 12px;
+      background: var(--tg-theme-secondary-bg-color, #202637);
     }
 
-    .word {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .username {
-      color: #ffffff;
-      font-size: 19px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      overflow-wrap: anywhere;
-    }
-
-    .word-note {
-      color: #8e98b0;
-      font-size: 11px;
-      margin-top: 5px;
-    }
-
-    .mini-btn {
-      width: auto;
-      padding: 10px 11px;
-      background: #2a3247;
-      color: #e5e9ff;
-      font-size: 12px;
-    }
-
-    .empty {
-      color: #b6bfd4;
-      text-align: center;
-      line-height: 1.6;
-      padding: 18px 4px;
-    }
-
-    .footer {
-      text-align: center;
-      color: #778198;
-      font-size: 12px;
-      line-height: 1.6;
-      margin-top: 22px;
-    }
-
-    .footer a {
-      color: #aeb5ff;
-    }
+    .info { flex: 1; min-width: 0; }
+    .name { font-size: 19px; font-weight: bold; overflow-wrap: anywhere; }
+    .note { font-size: 12px; margin-top: 5px; color: var(--tg-theme-hint-color, #aab2c5); }
+    .mini { width: auto; margin: 0; padding: 10px; font-size: 12px; }
+    .available { border: 1px solid #36b37e; }
+    .taken { opacity: .72; }
+    .unknown { border: 1px solid #d9a441; }
+    .section-title { margin: 22px 0 8px; font-size: 18px; }
+    .empty { padding: 12px 0; }
   </style>
 </head>
-
 <body>
-  <main class="app">
-    <header class="header">
-      <div class="logo">✦</div>
-      <h1>Username Finder</h1>
-      <div class="subtitle">
-        Найди короткое имя из пяти букв.<br>
-        Новые подборки без недавних повторов.
-      </div>
-    </header>
+<main>
+  <h1>✨ Username Finder</h1>
+  <p class="muted">
+    Генерация и предварительная проверка имён Telegram.
+    Доступность не гарантируется до попытки назначения имени в Telegram.
+  </p>
 
-    <section class="panel">
-      <label for="category">Какой стиль имени ищем?</label>
+  <label for="style">Стиль</label>
+  <select id="style">
+    <option value="all">Все стили</option>
+    <option value="english">Английские слова</option>
+    <option value="russian">Русские слова латиницей</option>
+    <option value="madeup">Выдуманные имена</option>
+  </select>
 
-      <select id="category">
-        <option value="all">✨ Все варианты</option>
-        <option value="english">📚 Английские слова</option>
-        <option value="russian">🌙 Русские слова латиницей</option>
-        <option value="aesthetic">💎 Красивые имена</option>
-        <option value="rare">🪐 Необычные сочетания</option>
-      </select>
+  <label for="length">Длина имени</label>
+  <select id="length">
+    <option value="5">5 букв</option>
+    <option value="6">6 букв</option>
+    <option value="7">7 букв</option>
+    <option value="8">8 букв</option>
+  </select>
 
-      <label for="amount">Сколько вариантов показать?</label>
+  <label for="amount">Сколько имён проверить</label>
+  <select id="amount">
+    <option value="5">5 имён</option>
+    <option value="10" selected>10 имён</option>
+    <option value="15">15 имён</option>
+    <option value="20">20 имён</option>
+  </select>
 
-      <select id="amount">
-        <option value="10">10 вариантов</option>
-        <option value="15" selected>15 вариантов</option>
-        <option value="20">20 вариантов</option>
-        <option value="30">30 вариантов</option>
-      </select>
+  <button id="start">🔎 Найти свободные</button>
+  <button id="stop" class="secondary" disabled>Остановить проверку</button>
+  <button id="clear" class="secondary">Сбросить историю повторов</button>
 
-      <button class="primary" id="generate">
-        ✨ Сгенерировать имена
-      </button>
+  <p id="status" class="muted">Готово к проверке.</p>
 
-      <div class="controls">
-        <button class="secondary" id="copyAll">
-          Копировать список
-        </button>
-        <button class="secondary" id="resetHistory">
-          Сбросить историю
-        </button>
-      </div>
+  <h2 class="section-title">Результаты</h2>
+  <section id="results">
+    <p class="muted empty">Здесь появятся результаты проверки.</p>
+  </section>
 
-      <p class="status" id="status">
-        Повторы исключаются среди последних 5 подборок.
-      </p>
-    </section>
+  <p class="muted">
+    Проверка использует публичный сторонний API. Статус «Свободно»
+    означает, что API не обнаружил публичную страницу, но не гарантирует
+    возможность зарегистрировать имя. Статус «Неизвестно» не считается свободным.
+  </p>
+</main>
 
-    <div class="results-header">
-      <h2>Твои варианты</h2>
-      <span class="counter" id="counter">0 имён</span>
-    </div>
+<script>
+  const tg = window.Telegram?.WebApp;
+  tg?.ready();
+  tg?.expand();
 
-    <section id="results">
-      <div class="panel empty">
-        Нажми «Сгенерировать имена», чтобы начать.
-      </div>
-    </section>
+  const API = "https://tg-username-api.vercel.app/api/v1/check";
+  const HISTORY_KEY = "usernameFinderCheckedHistoryV1";
 
-    <footer class="footer">
-      Генератор не проверяет доступность имён.<br>
-      Перед выбором проверь имя в Telegram.
-    </footer>
-  </main>
+  let stopped = false;
+  let currentResults = [];
 
-  <script>
-    const HISTORY_KEY = "usernameFinderHistoryV2";
-
-    // Английские слова из пяти букв.
-    const englishWords = `
+  const dictionaries = {
+    english: `
       amber apple beach bloom blush brave bread breeze brick
       bride bring broad brown brush cabin candy charm chase
-      cheer cherry chess chest chief child chill chime choir
-      clean clear clerk cliff climb clock cloud clown coast
-      coral couch could count craft crane crash cream creek
-      crisp crown dance dream dress drift drink drive earth
-      elite empty enjoy entry equal error event faith fairy
-      fancy fault feast fence fever field flame flash fleet
-      flesh float flood flour focus force forest found frame
-      fresh front fruit funny ghost giant given glass globe
-      glory grace grade grain grand grape graph grass green
-      greet grief grind group guard guess guest guide habit
-      happy heart honey horse hotel house human humor ideal
-      image index inner input ivory jewel joint judge juice
-      knife known label laser later laugh layer learn lemon
-      level light limit linen liver local logic loose lotus
-      lucky lunar magic mango maple march match maybe medal
-      mercy metal might minor model money month moral motor
-      mount mouse mouth music nerve never night noble noise
-      north novel nurse ocean offer often olive opera orbit
-      order organ other outer owner paint panel paper party
-      peace pearl phase phone photo piano piece pilot pitch
-      pixel place plain plane plant plate point polar pound
-      power press price pride prime print prize proof proud
-      queen quest quick quiet quite radar radio raise range
-      rapid ratio reach react ready relax reply right river
-      roast robin rocky round route royal ruler rural salad
-      scale scene scent scope score sense serve seven shade
-      shaft shape share sharp sheep sheer sheet shelf shell
-      shift shine shirt shock shore short shown sight since
+      cheer chess chest chief child chill chime choir clean
+      clear cliff climb clock cloud coast coral craft crane
+      crash cream creek crisp crown dance dream dress drift
+      drink drive earth elite enjoy entry faith fairy fancy
+      feast fence field flame flash fleet float flour focus
+      force fresh fruit ghost giant glass globe glory grace
+      grade grain grand grape graph grass green greet grind
+      group guard guess guest guide happy heart honey horse
+      hotel house human humor image ivory jewel joint juice
+      label laser laugh learn lemon level light linen local
+      logic lotus lucky lunar magic mango maple march match
+      medal mercy metal model money month moral motor mouse
+      music night noble noise north novel ocean olive opera
+      orbit order outer owner paint panel paper peace pearl
+      phase phone photo piano piece pilot pixel place plain
+      plane plant plate point polar power press price pride
+      prime print prize proud queen quest quick quiet radar
+      radio raise range rapid reach react ready relax reply
+      right river robin rocky round royal ruler salad scale
+      scene scope score sense serve shade shape share sharp
+      sheep sheet shelf shift shine shirt shore short sight
       skill sleep slice slide slope small smart smile smoke
       solid solve sound south space spare spark speak speed
-      spell spend spice spice spine spirit split sport spray
-      stack staff stage stain stair stake stand start state
-      steam steel steep still stock stone store storm story
-      strip study style sugar suite super sweet swift table
-      taste teach their theme there thick thing think third
-      those three throw tiger tight timer title today token
+      spell spice spine split sport spray stack stage stair
+      stamp stand start state steam steel steep still stock
+      stone store storm story strip study style sugar suite
+      super sweet swift table taste teach theme thick thing
+      think third throw tiger tight timer title today token
       topic total touch tough tower trace track trade trail
-      train treat trend trial tribe trick trust truth twice
-      under union unity until upper urban usage usual valid
-      value video visit vital voice waste watch water wheel
-      where which while white whole whose woman world worry
-      worth write wrong young youth zephyr xylem
-    `.trim().split(/\s+/);
+      train treat trend trial tribe trick trust truth under
+      union unity upper urban usual valid value video visit
+      vital voice waste watch water wheel white whole woman
+      world worry worth write young youth
+    `.trim().split(/\s+/),
 
-    // Транслитерации и короткие формы русских слов.
-    const russianWords = `
-      nochi nochu nochi luna lunny more reka reki vetra
-      vetry nebo neba zarya zare sveta svetl iskra iskor
-      ognya ogone ogoni tuman tumna rosaa rosae bereg
-      bereg volny volna volnae volna vetka vetvi lesok
-      lesna lesny listy listi snega snezh snegi zimny
-      zimna vesna vesny letom leta oseni oseno tishi
-      tisha tisho mirny mirna mirno dusha dushe dusho
-      mechta mechi tochka tochu krasa kraso krasn
-      slova slovy slovo zvuki zvuko zvona zvony pesny
-      pesna pecha radug ladno teplo tepla teple
-    `.trim().split(/\s+/);
+    russian: `
+      dusha nochi lunae volny volna iskra vetra vetry zarya
+      roska mirny mirna lesok lesny lesna listy snega zimny
+      zimna vesna vesny letom oseni tisha tishi tuman tumna
+      bereg krasa slova zvuki zvona pesny pesna sveta ognya
+      ogone mechta teplo tepla morea rekae
+    `.trim().split(/\s+/),
 
-    // Придуманные имена и эстетичные сочетания.
-    const aestheticWords = `
-      aural auria avell avira azura azuri elara elari elora
-      elune eluna elune emira enora evara evora evori
-      fiora fiore flora flori halia ilara ilora inari
-      isola ivora kaela kaeli kaira kairi kalen keira
-      kiara laira lairi liora liore liora lunea lunia
-      lyora maela maira malia melia melor meria miara
-      miloa naira nairi nalya neira nelia neria noira
-      norie nyora olina oraya oriel orina orlena
-      raela raeli riana rielle saela saeli selia serin
-      shira siana solia suela taela talia thera thora
-      ulani vaela vaeli velia verna viara viona
-      yaira yelia zaria zelia zoria zyara
-    `.trim().split(/\s+/);
+    madeup: `
+      velor lunet zefir elvyn avero nuvia sorel vaylo lyora
+      mirel orvyn zelvo nairi evora lurex rovik alven sylva
+      novar elora aural avira azura elara elune emira enora
+      evara fiora flora halia ilara ilora inari isola ivora
+      kaela kaira kalen keira kiara laira liora lunea lunia
+      maela maira malia melia meria miara naira nalya neira
+      nelia neria noira norie nyora olina oraya oriel orina
+      raela riana saela selia serin shira siana solia taela
+      talia thera thora vaela velia verna viara viona yaira
+      yelia zaria zelia zoria
+    `.trim().split(/\s+/)
+  };
 
-    // Сгенерированные сочетания: большое пространство вариантов.
-    const starts = [
+  function createCandidates(length, style) {
+    const source = style === "all"
+      ? Object.values(dictionaries).flat()
+      : dictionaries[style];
+
+    const candidates = new Set(
+      source.filter(word =>
+        new RegExp(`^[a-z]{${length}}$`).test(word)
+      )
+    );
+
+    // Добавляем выдуманные сочетания нужной длины.
+    const syllables = [
       "ae", "al", "ar", "av", "az", "el", "em", "en",
       "ev", "il", "im", "in", "iv", "ka", "ke", "ki",
       "la", "le", "li", "lo", "lu", "ma", "me", "mi",
@@ -346,232 +212,237 @@
       "ya", "ye", "za", "ze", "zo"
     ];
 
-    const middles = [
+    const consonants = [
       "b", "d", "f", "g", "l", "m", "n", "r", "s",
-      "v", "x", "y", "z", "th", "sh", "ch", "ph"
+      "v", "x", "y", "z"
     ];
 
-    const endings = [
-      "a", "e", "i", "o", "y", "en", "el", "er",
-      "ia", "is", "on", "or", "ra", "re", "yn", "yx"
-    ];
+    const vowels = ["a", "e", "i", "o", "y"];
 
-    const rareWords = new Set();
+    if (style === "madeup" || style === "all") {
+      for (const start of syllables) {
+        for (const consonant of consonants) {
+          for (const vowel of vowels) {
+            let word = start + consonant + vowel;
 
-    for (const start of starts) {
-      for (const middle of middles) {
-        for (const ending of endings) {
-          const candidate = (start + middle + ending).slice(0, 5);
+            while (word.length < length) {
+              word += vowels[Math.floor(Math.random() * vowels.length)];
+            }
 
-          if (/^[a-z]{5}$/.test(candidate)) {
-            rareWords.add(candidate);
+            word = word.slice(0, length);
+
+            if (new RegExp(`^[a-z]{${length}}$`).test(word)) {
+              candidates.add(word);
+            }
           }
         }
       }
     }
 
-    function uniqueFiveLetterWords(list) {
-      return [...new Set(list.map(word => word.toLowerCase()))]
-        .filter(word => /^[a-z]{5}$/.test(word));
+    return [...candidates];
+  }
+
+  function readHistory() {
+    try {
+      const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function getRecentlyUsed() {
+    return new Set(readHistory().slice(-5).flat());
+  }
+
+  function saveGeneration(names) {
+    const history = readHistory();
+    history.push(names);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-5)));
+  }
+
+  function shuffle(array) {
+    const result = [...array];
+
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
     }
 
-    const pools = {
-      english: uniqueFiveLetterWords(englishWords),
-      russian: uniqueFiveLetterWords(russianWords),
-      aesthetic: uniqueFiveLetterWords(aestheticWords),
-      rare: uniqueFiveLetterWords([...rareWords])
+    return result;
+  }
+
+  function renderResult(name, status, explanation, url) {
+    const container = document.getElementById("results");
+    const item = document.createElement("div");
+
+    item.className = "item " +
+      (status === "available" ? "available" :
+       status === "taken" ? "taken" : "unknown");
+
+    const info = document.createElement("div");
+    info.className = "info";
+
+    const label = document.createElement("div");
+    label.className = "name";
+    label.textContent = "@" + name;
+
+    const note = document.createElement("div");
+    note.className = "note";
+
+    const descriptions = {
+      available: "🟢 Предварительно свободно",
+      taken: "🔴 Занято",
+      fragment_collectible: "💎 Коллекционное имя",
+      unknown: "🟡 Не удалось определить"
     };
 
-    pools.all = uniqueFiveLetterWords([
-      ...pools.english,
-      ...pools.russian,
-      ...pools.aesthetic,
-      ...pools.rare
-    ]);
+    note.textContent =
+      (descriptions[status] || "🟡 Неизвестный статус") +
+      (explanation ? " · " + explanation : "");
 
-    let currentResults = [];
+    info.append(label, note);
 
-    function getHistory() {
+    const copy = document.createElement("button");
+    copy.className = "mini";
+    copy.textContent = "Копировать";
+    copy.onclick = async () => {
       try {
-        const parsed = JSON.parse(
-          localStorage.getItem(HISTORY_KEY) || "[]"
-        );
-
-        return Array.isArray(parsed) ? parsed : [];
+        await navigator.clipboard.writeText(name);
+        copy.textContent = "Готово ✓";
       } catch {
-        return [];
+        copy.textContent = name;
       }
+    };
+
+    item.append(info, copy);
+
+    if (url) {
+      const open = document.createElement("button");
+      open.className = "mini secondary";
+      open.textContent = "Открыть";
+      open.onclick = () => window.open(url, "_blank");
+      item.append(open);
     }
 
-    function getUsedWords() {
-      return new Set(getHistory().flat());
+    container.append(item);
+  }
+
+  async function checkUsername(name) {
+    const response = await fetch(
+      `${API}?username=${encodeURIComponent(name)}`,
+      { method: "GET" }
+    );
+
+    if (!response.ok) {
+      throw new Error("API вернул HTTP " + response.status);
     }
 
-    function rememberWords(words) {
-      const history = getHistory();
+    const data = await response.json();
 
-      history.push([...new Set(words)]);
-
-      localStorage.setItem(
-        HISTORY_KEY,
-        JSON.stringify(history.slice(-5))
-      );
+    if (!data.success || !data.result) {
+      throw new Error("Неожиданный ответ API");
     }
 
-    function shuffle(list) {
-      const result = [...list];
+    return data;
+  }
 
-      for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
-      }
+  async function startSearch() {
+    const startButton = document.getElementById("start");
+    const stopButton = document.getElementById("stop");
+    const statusEl = document.getElementById("status");
+    const results = document.getElementById("results");
 
-      return result;
+    const length = Number(document.getElementById("length").value);
+    const amount = Number(document.getElementById("amount").value);
+    const style = document.getElementById("style").value;
+
+    stopped = false;
+    startButton.disabled = true;
+    stopButton.disabled = false;
+    results.replaceChildren();
+    currentResults = [];
+
+    const recent = getRecentlyUsed();
+    const candidates = shuffle(
+      createCandidates(length, style).filter(name => !recent.has(name))
+    ).slice(0, amount);
+
+    if (candidates.length === 0) {
+      statusEl.textContent =
+        "Новых кандидатов нет. Сбрось историю или измени стиль/длину.";
+      startButton.disabled = false;
+      stopButton.disabled = true;
+      return;
     }
 
-    function pluralize(count) {
-      return count === 1 ? "имя" :
-        count >= 2 && count <= 4 ? "имени" : "имён";
-    }
+    statusEl.textContent = `Подготовлено кандидатов: ${candidates.length}. Начинаю проверку…`;
 
-    function generate() {
-      const category = document.getElementById("category").value;
-      const amount = Number(document.getElementById("amount").value);
-      const used = getUsedWords();
+    const checkedThisRun = [];
 
-      const source = pools[category] || pools.all;
+    for (let i = 0; i < candidates.length; i++) {
+      if (stopped) break;
 
-      // Слова, которые уже были в последних пяти подборках,
-      // временно исключаются.
-      const fresh = source.filter(word => !used.has(word));
+      const name = candidates[i];
+      statusEl.textContent =
+        `Проверка ${i + 1} из ${candidates.length}: @${name}`;
 
-      if (fresh.length === 0) {
-        currentResults = [];
-        renderResults();
-
-        document.getElementById("status").textContent =
-          "В этой категории закончились новые варианты. " +
-          "Сбрось историю или выбери другую категорию.";
-
-        return;
-      }
-
-      currentResults = shuffle(fresh).slice(0, amount);
-
-      rememberWords(currentResults);
-      renderResults();
-
-      const remaining = Math.max(0, fresh.length - currentResults.length);
-
-      document.getElementById("status").textContent =
-        `Показано ${currentResults.length}. ` +
-        `В этой категории осталось новых вариантов: ${remaining}.`;
-    }
-
-    function renderResults() {
-      const container = document.getElementById("results");
-      const counter = document.getElementById("counter");
-
-      counter.textContent =
-        `${currentResults.length} ${pluralize(currentResults.length)}`;
-
-      if (currentResults.length === 0) {
-        container.innerHTML = `
-          <div class="panel empty">
-            Новых вариантов не найдено.<br>
-            Попробуй другую категорию или сбрось историю.
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = "";
-
-      currentResults.forEach(word => {
-        const item = document.createElement("div");
-        item.className = "result";
-
-        const info = document.createElement("div");
-        info.className = "word";
-
-        const name = document.createElement("div");
-        name.className = "username";
-        name.textContent = word;
-
-        const note = document.createElement("div");
-        note.className = "word-note";
-        note.textContent = "5 букв · латиница";
-
-        info.appendChild(name);
-        info.appendChild(note);
-
-        const copyButton = document.createElement("button");
-        copyButton.className = "mini-btn";
-        copyButton.textContent = "Копировать";
-        copyButton.addEventListener("click", async () => {
-          await copyText(word);
-          copyButton.textContent = "Готово ✓";
-          setTimeout(() => {
-            copyButton.textContent = "Копировать";
-          }, 1200);
-        });
-
-        const openButton = document.createElement("button");
-        openButton.className = "mini-btn";
-        openButton.textContent = "Открыть";
-        openButton.addEventListener("click", () => {
-          window.open(
-            "https://t.me/" + encodeURIComponent(word),
-            "_blank"
-          );
-        });
-
-        item.appendChild(info);
-        item.appendChild(copyButton);
-        item.appendChild(openButton);
-        container.appendChild(item);
-      });
-    }
-
-    async function copyText(text) {
       try {
-        await navigator.clipboard.writeText(text);
-      } catch {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        textarea.remove();
-      }
-    }
+        const data = await checkUsername(name);
+        const result = data.result;
+        const telegram = data.telegram || {};
 
-    document.getElementById("generate")
-      .addEventListener("click", generate);
+        let displayStatus = result.status || "unknown";
 
-    document.getElementById("copyAll")
-      .addEventListener("click", async () => {
-        if (currentResults.length === 0) {
-          document.getElementById("status").textContent =
-            "Сначала сгенерируй список.";
-          return;
+        if (displayStatus === "available" && telegram.exists === true) {
+          displayStatus = "taken";
         }
 
-        await copyText(currentResults.join("\n"));
-        document.getElementById("status").textContent =
-          "Список скопирован!";
-      });
+        const explanation = result.explanation || "";
+        const url = telegram.public_url || `https://t.me/${name}`;
 
-    document.getElementById("resetHistory")
-      .addEventListener("click", () => {
-        localStorage.removeItem(HISTORY_KEY);
-        document.getElementById("status").textContent =
-          "История очищена. Можно генерировать заново.";
-        generate();
-      });
+        currentResults.push({ name, status: displayStatus });
+        renderResult(name, displayStatus, explanation, url);
+      } catch (error) {
+        currentResults.push({ name, status: "unknown" });
+        renderResult(name, "unknown", error.message, `https://t.me/${name}`);
+      }
 
-    generate();
-  </script>
+      checkedThisRun.push(name);
+
+      // Не отправляем слишком частые запросы.
+      if (i < candidates.length - 1 && !stopped) {
+        await new Promise(resolve => setTimeout(resolve, 2500));
+      }
+    }
+
+    if (checkedThisRun.length) saveGeneration(checkedThisRun);
+
+    const freeCount = currentResults.filter(
+      item => item.status === "available"
+    ).length;
+
+    statusEl.textContent = stopped
+      ? `Проверка остановлена. Проверено: ${checkedThisRun.length}. Предварительно свободно: ${freeCount}.`
+      : `Готово. Проверено: ${checkedThisRun.length}. Предварительно свободно: ${freeCount}.`;
+
+    startButton.disabled = false;
+    stopButton.disabled = true;
+  }
+
+  document.getElementById("start").addEventListener("click", startSearch);
+
+  document.getElementById("stop").addEventListener("click", () => {
+    stopped = true;
+    document.getElementById("status").textContent = "Останавливаю проверку…";
+  });
+
+  document.getElementById("clear").addEventListener("click", () => {
+    localStorage.removeItem(HISTORY_KEY);
+    document.getElementById("status").textContent =
+      "История повторов очищена.";
+  });
+</script>
 </body>
 </html>
 ```
