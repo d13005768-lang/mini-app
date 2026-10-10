@@ -19,6 +19,7 @@
 
     main { max-width: 480px; margin: 0 auto; }
     h1 { font-size: 26px; }
+    p { line-height: 1.5; }
 
     select, button {
       width: 100%;
@@ -52,25 +53,40 @@
     }
 
     .name { font-size: 20px; font-weight: bold; }
-    .note { font-size: 12px; color: var(--tg-theme-hint-color, #aab2c5); }
-    .copy { width: auto; margin: 0; padding: 10px 13px; }
+    .note {
+      font-size: 12px;
+      color: var(--tg-theme-hint-color, #aab2c5);
+      margin-top: 4px;
+    }
+
+    .copy {
+      width: auto;
+      flex-shrink: 0;
+      margin: 0;
+      padding: 10px 13px;
+    }
+
+    .hint { font-size: 13px; opacity: .8; }
   </style>
 </head>
 <body>
 <main>
   <h1>✨ Username Finder</h1>
-  <p>Красивые Telegram-имена из пяти латинских букв.</p>
+  <p>Редкие слова и красивые имена из пяти латинских букв.</p>
 
   <select id="style">
-    <option value="all">Все стили</option>
-    <option value="english">Английские слова</option>
+    <option value="all">Все категории</option>
+    <option value="english">Редкие английские слова</option>
     <option value="russian">Русские слова латиницей</option>
-    <option value="madeup">Красивые выдуманные</option>
+    <option value="madeup">Выдуманные имена</option>
   </select>
 
-  <button id="generate">Подобрать имена</button>
-  <p id="status" class="note"></p>
+  <button id="generate">Найти варианты</button>
+  <p id="status" class="note" aria-live="polite"></p>
   <section id="results"></section>
+  <p class="hint">
+    Варианты не проверены в Telegram. Редкое слово не обязательно свободно.
+  </p>
 </main>
 
 <script>
@@ -80,26 +96,73 @@
 
   const words = {
     english: [
-      "raven", "flame", "dream", "stone", "light",
-      "storm", "heart", "night", "cloud", "bliss",
-      "shine", "brave", "grace", "charm", "quest",
-      "bloom", "frost", "peace", "ocean", "ghost"
+      "acorn", "aloft", "amber", "ashen", "axiom",
+      "basil", "beryl", "brink", "cairn", "cedar",
+      "chasm", "cider", "coral", "covet", "crane",
+      "croft", "delft", "delta", "droll", "ember",
+      "epoch", "facet", "fable", "feral", "fjord",
+      "flint", "flora", "gazer", "gleny", "gloom",
+      "havoc", "heron", "honey", "inlet", "ivory",
+      "jaunt", "karma", "knoll", "lilac", "lumen",
+      "maple", "mirth", "mocha", "mossy", "myrrh",
+      "naive", "niche", "nymph", "ochre", "olive",
+      "opium", "orbit", "otter", "oxide", "pansy",
+      "pearl", "pecan", "pesto", "petal", "plume",
+      "quail", "quirk", "realm", "relic", "rivet",
+      "roost", "rowan", "sable", "satin", "sepia",
+      "shire", "siren", "slate", "smirk", "sonar",
+      "spelt", "spore", "sprig", "stork", "surge",
+      "tacit", "tempo", "thrum", "topaz", "umbra",
+      "vapor", "velum", "verve", "vigil", "waltz",
+      "weald", "wisp", "woven", "xylem", "yearn",
+      "yucca", "zesty", "zonal"
     ],
+
     russian: [
-      "privet", "dusha", "noch", "mir", "zvezda",
-      "solnce", "mechta", "volna", "iskra", "nebo",
-      "luna", "veter", "vesna", "radost", "tisha"
+      "dacha", "davno", "dekor", "dengi", "dozhd",
+      "duplo", "dyshi", "iskra", "kamin", "karta",
+      "kazan", "kniga", "koala", "krasa", "krilo",
+      "kusty", "laska", "lesok", "listy", "luchi",
+      "lutik", "malva", "mango", "mecha", "metel",
+      "mirny", "morel", "moroz", "motiv", "myata",
+      "nevod", "norka", "oblak", "ogony", "okapi",
+      "oseny", "otrad", "pchel", "pesny", "plamy",
+      "polka", "prana", "prism", "radar", "radug",
+      "reika", "riska", "rosha", "rubin", "rybak",
+      "sazha", "sever", "siren", "skala", "slava",
+      "smola", "snezh", "sonet", "sosna", "sreda",
+      "stena", "taiga", "tuman", "tykva", "uzory",
+      "valun", "vecher", "vetka", "vinta", "volna",
+      "vysot", "zakat", "zerno", "zefir", "zoria"
     ],
+
     madeup: [
-      "velor", "lunet", "zefir", "elvyn", "avero",
-      "nuvia", "sorel", "vaylo", "lyora", "mirel",
-      "orvyn", "zelvo", "nairi", "evora", "lurex",
-      "rovik", "alven", "sylva", "novar", "elora"
+      "aevon", "alvyn", "arven", "avelo", "azuri",
+      "belvo", "caeli", "calyx", "dovik", "elvar",
+      "elvyn", "evori", "faelo", "feyra", "kaelo",
+      "kelvo", "korvi", "laero", "levox", "liora",
+      "loren", "luven", "maevo", "mevra", "naelo",
+      "navir", "nelvo", "nexor", "nyvra", "orvyn",
+      "ovelo", "raelo", "ravik", "revia", "rivon",
+      "saeli", "selvo", "sovra", "taelo", "tavik",
+      "ulvyn", "vaelo", "velto", "verix", "vexor",
+      "viora", "virel", "xelvo", "xevra", "yavik",
+      "yovra", "zaelo", "zayro", "zelvi", "zevra",
+      "zoria", "zyven", "lunex", "sylvo", "novix",
+      "orixa", "vaylo", "elora", "mirel", "nuvia"
     ]
   };
 
-  // Оставляем только имена ровно из пяти латинских букв.
   const valid = name => /^[a-z]{5}$/.test(name);
+
+  function shuffle(list) {
+    const result = [...list];
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
 
   function pickNames() {
     const selected = document.getElementById("style").value;
@@ -107,9 +170,7 @@
       ? Object.values(words).flat()
       : words[selected];
 
-    return [...new Set(pool.filter(valid))]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 12);
+    return shuffle([...new Set(pool.filter(valid))]).slice(0, 15);
   }
 
   document.getElementById("generate").onclick = () => {
@@ -119,8 +180,13 @@
 
     const names = pickNames();
 
+    if (!names.length) {
+      status.textContent = "В этой категории пока нет вариантов.";
+      return;
+    }
+
     status.textContent =
-      "Подборка готова. Доступность Telegram не проверена.";
+      `Подобрано вариантов: ${names.length}. Доступность не проверена.`;
 
     for (const name of names) {
       const item = document.createElement("div");
@@ -133,24 +199,24 @@
 
       const note = document.createElement("div");
       note.className = "note";
-      note.textContent = "Кандидат · 5 букв";
+      note.textContent = "5 букв · кандидат";
 
       info.append(label, note);
 
-      const button = document.createElement("button");
-      button.className = "copy";
-      button.textContent = "Копировать";
+      const copy = document.createElement("button");
+      copy.className = "copy";
+      copy.textContent = "Копировать";
 
-      button.onclick = async () => {
+      copy.onclick = async () => {
         try {
           await navigator.clipboard.writeText(name);
-          button.textContent = "Скопировано!";
+          copy.textContent = "Скопировано!";
         } catch {
-          button.textContent = name;
+          window.prompt("Скопируй имя:", name);
         }
       };
 
-      item.append(info, button);
+      item.append(info, copy);
       results.append(item);
     }
   };
