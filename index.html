@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Username Finder</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     * { box-sizing: border-box; }
 
@@ -19,7 +20,16 @@
 
     main { max-width: 520px; margin: 0 auto; }
     h1 { font-size: 26px; margin-bottom: 8px; }
-    .muted { color: var(--tg-theme-hint-color, #aab2c5); font-size: 13px; line-height: 1.5; }
+    .muted {
+      color: var(--tg-theme-hint-color, #aab2c5);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+    }
 
     select, button {
       width: 100%;
@@ -59,22 +69,53 @@
     }
 
     .info { flex: 1; min-width: 0; }
-    .name { font-size: 19px; font-weight: bold; overflow-wrap: anywhere; }
-    .note { font-size: 12px; margin-top: 5px; color: var(--tg-theme-hint-color, #aab2c5); }
-    .mini { width: auto; margin: 0; padding: 10px; font-size: 12px; }
+    .name {
+      font-size: 19px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+    .note {
+      font-size: 12px;
+      margin-top: 5px;
+      color: var(--tg-theme-hint-color, #aab2c5);
+      line-height: 1.4;
+    }
+    .mini {
+      width: auto;
+      flex-shrink: 0;
+      margin: 0;
+      padding: 10px;
+      font-size: 12px;
+    }
     .available { border: 1px solid #36b37e; }
-    .taken { opacity: .72; }
-    .unknown { border: 1px solid #d9a441; }
     .section-title { margin: 22px 0 8px; font-size: 18px; }
     .empty { padding: 12px 0; }
+
+    .progress {
+      height: 6px;
+      border-radius: 6px;
+      background: var(--tg-theme-secondary-bg-color, #202637);
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #36b37e;
+      transition: width .2s;
+    }
   </style>
 </head>
+
 <body>
 <main>
   <h1>✨ Username Finder</h1>
+
   <p class="muted">
-    Генерация и предварительная проверка имён Telegram.
-    Доступность не гарантируется до попытки назначения имени в Telegram.
+    Генератор Telegram-имён с предварительной проверкой.
+    Показываем только результаты, которые API считает свободными.
+    Доступность не гарантируется до попытки назначения имени.
   </p>
 
   <label for="style">Стиль</label>
@@ -93,7 +134,7 @@
     <option value="8">8 букв</option>
   </select>
 
-  <label for="amount">Сколько имён проверить</label>
+  <label for="amount">Сколько свободных имён найти</label>
   <select id="amount">
     <option value="5">5 имён</option>
     <option value="10" selected>10 имён</option>
@@ -102,20 +143,33 @@
   </select>
 
   <button id="start">🔎 Найти свободные</button>
-  <button id="stop" class="secondary" disabled>Остановить проверку</button>
-  <button id="clear" class="secondary">Сбросить историю повторов</button>
+  <button id="stop" class="secondary" disabled>
+    Остановить проверку
+  </button>
+  <button id="clear" class="secondary">
+    Сбросить историю повторов
+  </button>
 
-  <p id="status" class="muted">Готово к проверке.</p>
+  <p id="status" class="muted" aria-live="polite">
+    Готово к проверке.
+  </p>
 
-  <h2 class="section-title">Результаты</h2>
+  <div class="progress">
+    <div id="progressBar" class="progress-bar"></div>
+  </div>
+
+  <h2 class="section-title">Предварительно свободные имена</h2>
   <section id="results">
-    <p class="muted empty">Здесь появятся результаты проверки.</p>
+    <p class="muted empty">
+      Здесь появятся результаты проверки.
+    </p>
   </section>
 
   <p class="muted">
-    Проверка использует публичный сторонний API. Статус «Свободно»
-    означает, что API не обнаружил публичную страницу, но не гарантирует
-    возможность зарегистрировать имя. Статус «Неизвестно» не считается свободным.
+    Проверка использует сторонний API. Имена со статусом «Занято»,
+    «Неизвестно» и с ошибками проверки не отображаются.
+    Даже статус «available» не гарантирует, что Telegram разрешит
+    назначить имя: окончательное решение принимает Telegram.
   </p>
 </main>
 
@@ -124,10 +178,18 @@
   tg?.ready();
   tg?.expand();
 
-  const API = "https://tg-username-api.vercel.app/api/v1/check";
+  const API =
+    "https://tg-username-api.vercel.app/api/v1/check";
+
   const HISTORY_KEY = "usernameFinderCheckedHistoryV1";
 
+  // Ограничение одного запуска, чтобы не отправлять
+  // бесконечные запросы стороннему сервису.
+  const MAX_CHECKS = 40;
+  const REQUEST_DELAY = 2500;
+
   let stopped = false;
+  let searching = false;
   let currentResults = [];
 
   const dictionaries = {
@@ -174,7 +236,8 @@
       roska mirny mirna lesok lesny lesna listy snega zimny
       zimna vesna vesny letom oseni tisha tishi tuman tumna
       bereg krasa slova zvuki zvona pesny pesna sveta ognya
-      ogone mechta teplo tepla morea rekae
+      mechta teplo more reka mir luna veter zvezda solnce
+      radost volna neba nochi svet lesa pole rosa reka
     `.trim().split(/\s+/),
 
     madeup: `
@@ -191,47 +254,52 @@
     `.trim().split(/\s+/)
   };
 
+  const syllables = [
+    "ae", "al", "ar", "av", "az", "el", "em", "en",
+    "ev", "il", "im", "in", "iv", "ka", "ke", "ki",
+    "la", "le", "li", "lo", "lu", "ma", "me", "mi",
+    "na", "ne", "ni", "no", "ra", "re", "ri", "sa",
+    "se", "si", "so", "ta", "te", "va", "ve", "vi",
+    "ya", "ye", "za", "ze", "zo"
+  ];
+
+  const consonants = [
+    "b", "d", "f", "g", "l", "m", "n",
+    "r", "s", "v", "x", "y", "z"
+  ];
+
+  const vowels = ["a", "e", "i", "o", "y"];
+
   function createCandidates(length, style) {
     const source = style === "all"
       ? Object.values(dictionaries).flat()
-      : dictionaries[style];
+      : (dictionaries[style] || []);
 
     const candidates = new Set(
-      source.filter(word =>
-        new RegExp(`^[a-z]{${length}}$`).test(word)
-      )
+      source
+        .map(word => word.toLowerCase())
+        .filter(word =>
+          new RegExp(`^[a-z]{${length}}$`).test(word)
+        )
     );
 
-    // Добавляем выдуманные сочетания нужной длины.
-    const syllables = [
-      "ae", "al", "ar", "av", "az", "el", "em", "en",
-      "ev", "il", "im", "in", "iv", "ka", "ke", "ki",
-      "la", "le", "li", "lo", "lu", "ma", "me", "mi",
-      "na", "ne", "ni", "no", "ra", "re", "ri", "sa",
-      "se", "si", "so", "ta", "te", "va", "ve", "vi",
-      "ya", "ye", "za", "ze", "zo"
-    ];
+    // Создаём дополнительные варианты для любой выбранной длины.
+    // Дубликаты автоматически удаляются через Set.
+    for (const start of syllables) {
+      for (const consonant of consonants) {
+        for (const vowel of vowels) {
+          let word = start + consonant + vowel;
 
-    const consonants = [
-      "b", "d", "f", "g", "l", "m", "n", "r", "s",
-      "v", "x", "y", "z"
-    ];
+          while (word.length < length) {
+            word += vowels[
+              Math.floor(Math.random() * vowels.length)
+            ];
+          }
 
-    const vowels = ["a", "e", "i", "o", "y"];
+          word = word.slice(0, length);
 
-    if (style === "madeup" || style === "all") {
-      for (const start of syllables) {
-        for (const consonant of consonants) {
-          for (const vowel of vowels) {
-            let word = start + consonant + vowel;
-
-            while (word.length < length) {
-              word += vowels[Math.floor(Math.random() * vowels.length)];
-            }
-
-            word = word.slice(0, length);
-
-            if (new RegExp(`^[a-z]{${length}}$`).test(word)) {
+          if (/^[a-z]+$/.test(word)) {
+            if (style === "madeup" || style === "all") {
               candidates.add(word);
             }
           }
@@ -244,7 +312,10 @@
 
   function readHistory() {
     try {
-      const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      const value = JSON.parse(
+        localStorage.getItem(HISTORY_KEY) || "[]"
+      );
+
       return Array.isArray(value) ? value : [];
     } catch {
       return [];
@@ -252,13 +323,25 @@
   }
 
   function getRecentlyUsed() {
-    return new Set(readHistory().slice(-5).flat());
+    return new Set(
+      readHistory().slice(-5).flat()
+    );
   }
 
   function saveGeneration(names) {
+    if (!names.length) return;
+
     const history = readHistory();
     history.push(names);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-5)));
+
+    try {
+      localStorage.setItem(
+        HISTORY_KEY,
+        JSON.stringify(history.slice(-5))
+      );
+    } catch (error) {
+      console.warn("Не удалось сохранить историю", error);
+    }
   }
 
   function shuffle(array) {
@@ -272,13 +355,11 @@
     return result;
   }
 
-  function renderResult(name, status, explanation, url) {
+  function renderResult(name, explanation) {
     const container = document.getElementById("results");
     const item = document.createElement("div");
 
-    item.className = "item " +
-      (status === "available" ? "available" :
-       status === "taken" ? "taken" : "unknown");
+    item.className = "item available";
 
     const info = document.createElement("div");
     info.className = "info";
@@ -289,16 +370,8 @@
 
     const note = document.createElement("div");
     note.className = "note";
-
-    const descriptions = {
-      available: "🟢 Предварительно свободно",
-      taken: "🔴 Занято",
-      fragment_collectible: "💎 Коллекционное имя",
-      unknown: "🟡 Не удалось определить"
-    };
-
     note.textContent =
-      (descriptions[status] || "🟡 Неизвестный статус") +
+      "🟢 API считает предварительно свободным" +
       (explanation ? " · " + explanation : "");
 
     info.append(label, note);
@@ -306,25 +379,40 @@
     const copy = document.createElement("button");
     copy.className = "mini";
     copy.textContent = "Копировать";
+
     copy.onclick = async () => {
       try {
         await navigator.clipboard.writeText(name);
         copy.textContent = "Готово ✓";
       } catch {
-        copy.textContent = name;
+        // Резервный способ копирования.
+        const area = document.createElement("textarea");
+        area.value = name;
+        document.body.appendChild(area);
+        area.select();
+
+        try {
+          document.execCommand("copy");
+          copy.textContent = "Готово ✓";
+        } catch {
+          copy.textContent = name;
+        }
+
+        area.remove();
       }
     };
 
-    item.append(info, copy);
+    const open = document.createElement("button");
+    open.className = "mini secondary";
+    open.textContent = "Открыть";
+    open.onclick = () => {
+      window.open(
+        `https://t.me/${encodeURIComponent(name)}`,
+        "_blank"
+      );
+    };
 
-    if (url) {
-      const open = document.createElement("button");
-      open.className = "mini secondary";
-      open.textContent = "Открыть";
-      open.onclick = () => window.open(url, "_blank");
-      item.append(open);
-    }
-
+    item.append(info, copy, open);
     container.append(item);
   }
 
@@ -348,93 +436,156 @@
   }
 
   async function startSearch() {
+    if (searching) return;
+
     const startButton = document.getElementById("start");
     const stopButton = document.getElementById("stop");
     const statusEl = document.getElementById("status");
     const results = document.getElementById("results");
+    const progressBar = document.getElementById("progressBar");
 
-    const length = Number(document.getElementById("length").value);
-    const amount = Number(document.getElementById("amount").value);
+    const length = Number(
+      document.getElementById("length").value
+    );
+    const amount = Number(
+      document.getElementById("amount").value
+    );
     const style = document.getElementById("style").value;
 
     stopped = false;
+    searching = true;
     startButton.disabled = true;
     stopButton.disabled = false;
+
     results.replaceChildren();
     currentResults = [];
+    progressBar.style.width = "0%";
 
     const recent = getRecentlyUsed();
-    const candidates = shuffle(
-      createCandidates(length, style).filter(name => !recent.has(name))
-    ).slice(0, amount);
 
-    if (candidates.length === 0) {
+    let pool = shuffle(
+      createCandidates(length, style)
+        .filter(name => !recent.has(name))
+    );
+
+    // Добавляем придуманные варианты как запасной источник,
+    // если выбранный стиль дал мало кандидатов.
+    if (style !== "madeup") {
+      const extras = createCandidates(length, "madeup")
+        .filter(name =>
+          !recent.has(name) && !pool.includes(name)
+        );
+
+      pool = pool.concat(shuffle(extras));
+    }
+
+    pool = shuffle([...new Set(pool)]).slice(0, MAX_CHECKS);
+
+    if (pool.length === 0) {
       statusEl.textContent =
-        "Новых кандидатов нет. Сбрось историю или измени стиль/длину.";
+        "Новых кандидатов нет. Измени длину или сбрось историю.";
+
+      const message = document.createElement("p");
+      message.className = "muted empty";
+      message.textContent = "Нет вариантов для проверки.";
+      results.append(message);
+
       startButton.disabled = false;
       stopButton.disabled = true;
+      searching = false;
       return;
     }
 
-    statusEl.textContent = `Подготовлено кандидатов: ${candidates.length}. Начинаю проверку…`;
-
     const checkedThisRun = [];
+    let checked = 0;
+    let errors = 0;
 
-    for (let i = 0; i < candidates.length; i++) {
+    statusEl.textContent =
+      `Ищу ${amount} свободных имён. Максимум проверок: ${pool.length}.`;
+
+    for (
+      let i = 0;
+      i < pool.length && currentResults.length < amount;
+      i++
+    ) {
       if (stopped) break;
 
-      const name = candidates[i];
+      const name = pool[i];
+
       statusEl.textContent =
-        `Проверка ${i + 1} из ${candidates.length}: @${name}`;
+        `Проверено ${checked}/${pool.length}. ` +
+        `Найдено ${currentResults.length}/${amount}. ` +
+        `Проверяю @${name}…`;
 
       try {
         const data = await checkUsername(name);
-        const result = data.result;
+        const result = data.result || {};
         const telegram = data.telegram || {};
 
-        let displayStatus = result.status || "unknown";
+        checked++;
+        checkedThisRun.push(name);
 
-        if (displayStatus === "available" && telegram.exists === true) {
-          displayStatus = "taken";
+        // Никакие неизвестные или занятые имена не показываем.
+        // Даже available отклоняем, если Telegram явно сообщает,
+        // что имя существует.
+        if (
+          result.status === "available" &&
+          telegram.exists !== true
+        ) {
+          currentResults.push(name);
+          renderResult(name, result.explanation || "");
         }
-
-        const explanation = result.explanation || "";
-        const url = telegram.public_url || `https://t.me/${name}`;
-
-        currentResults.push({ name, status: displayStatus });
-        renderResult(name, displayStatus, explanation, url);
       } catch (error) {
-        currentResults.push({ name, status: "unknown" });
-        renderResult(name, "unknown", error.message, `https://t.me/${name}`);
+        checked++;
+        errors++;
+        checkedThisRun.push(name);
+        console.warn("Ошибка проверки @" + name, error);
       }
 
-      checkedThisRun.push(name);
+      progressBar.style.width =
+        Math.round((i + 1) / pool.length * 100) + "%";
 
-      // Не отправляем слишком частые запросы.
-      if (i < candidates.length - 1 && !stopped) {
-        await new Promise(resolve => setTimeout(resolve, 2500));
+      if (
+        i < pool.length - 1 &&
+        !stopped &&
+        currentResults.length < amount
+      ) {
+        await new Promise(resolve =>
+          setTimeout(resolve, REQUEST_DELAY)
+        );
       }
     }
 
-    if (checkedThisRun.length) saveGeneration(checkedThisRun);
+    saveGeneration(checkedThisRun);
 
-    const freeCount = currentResults.filter(
-      item => item.status === "available"
-    ).length;
+    if (currentResults.length === 0) {
+      const message = document.createElement("p");
+      message.className = "muted empty";
+      message.textContent =
+        "Не найдено имён, которые API подтвердил как предварительно свободные. " +
+        "Это не значит, что свободных имён нет. Попробуй другую длину или стиль.";
+      results.append(message);
+    }
 
-    statusEl.textContent = stopped
-      ? `Проверка остановлена. Проверено: ${checkedThisRun.length}. Предварительно свободно: ${freeCount}.`
-      : `Готово. Проверено: ${checkedThisRun.length}. Предварительно свободно: ${freeCount}.`;
+    statusEl.textContent =
+      `${stopped ? "Проверка остановлена" : "Готово"}. ` +
+      `Проверено: ${checked}. ` +
+      `Предварительно свободных: ${currentResults.length}.` +
+      (errors ? ` Ошибок API: ${errors}.` : "");
 
     startButton.disabled = false;
     stopButton.disabled = true;
+    searching = false;
   }
 
-  document.getElementById("start").addEventListener("click", startSearch);
+  document
+    .getElementById("start")
+    .addEventListener("click", startSearch);
 
   document.getElementById("stop").addEventListener("click", () => {
     stopped = true;
-    document.getElementById("status").textContent = "Останавливаю проверку…";
+    document.getElementById("status").textContent =
+      "Останавливаю проверку…";
   });
 
   document.getElementById("clear").addEventListener("click", () => {
