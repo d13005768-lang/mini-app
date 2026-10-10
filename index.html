@@ -4,549 +4,467 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Username Finder</title>
+  <meta name="theme-color" content="#101827">
+  <title>Telegram Username Finder</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 18px;
-      background: var(--tg-theme-bg-color, #10131b);
-      color: var(--tg-theme-text-color, #fff);
-      font: 16px Arial, sans-serif;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: var(--tg-theme-text-color, #f3f5f9);
+      background: var(--tg-theme-bg-color, #101827);
     }
-    main { max-width: 520px; margin: 0 auto; }
-    h1 { font-size: 26px; margin-bottom: 8px; }
-    .muted {
-      color: var(--tg-theme-hint-color, #aab2c5);
-      font-size: 13px;
-      line-height: 1.5;
+    .app { max-width: 560px; margin: auto; }
+    h1 { font-size: 25px; margin: 0 0 8px; }
+    .sub { opacity: .75; line-height: 1.5; margin-bottom: 22px; }
+    .panel {
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--tg-theme-secondary-bg-color, #1b2638);
+      margin-bottom: 16px;
     }
-    label { display: block; margin-top: 12px; }
-    select, button {
+    label { display: block; margin: 14px 0 8px; font-weight: 600; }
+    select, input, button {
       width: 100%;
       padding: 13px;
-      margin: 7px 0;
-      border: 0;
-      border-radius: 12px;
-      font-size: 15px;
+      border-radius: 10px;
+      border: 1px solid #64748b55;
+      font-size: 16px;
     }
-    select {
-      background: var(--tg-theme-secondary-bg-color, #202637);
-      color: var(--tg-theme-text-color, white);
+    select, input {
+      color: var(--tg-theme-text-color, #fff);
+      background: var(--tg-theme-bg-color, #101827);
     }
     button {
-      background: var(--tg-theme-button-color, #5288ff);
-      color: var(--tg-theme-button-text-color, white);
+      border: 0;
+      margin-top: 16px;
+      background: var(--tg-theme-button-color, #388bfd);
+      color: var(--tg-theme-button-text-color, #fff);
+      font-weight: bold;
       cursor: pointer;
     }
     button:disabled { opacity: .5; cursor: wait; }
-    .secondary {
-      background: var(--tg-theme-secondary-bg-color, #202637);
-      color: var(--tg-theme-text-color, white);
-    }
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 9px;
+    .status { line-height: 1.5; overflow-wrap: anywhere; }
+    .result {
       padding: 12px;
+      border-radius: 10px;
       margin-top: 9px;
-      border-radius: 12px;
-      background: var(--tg-theme-secondary-bg-color, #202637);
-      border: 1px solid #36b37e;
+      background: var(--tg-theme-secondary-bg-color, #1b2638);
+      overflow-wrap: anywhere;
     }
-    .info { flex: 1; min-width: 0; }
-    .name { font-size: 19px; font-weight: bold; overflow-wrap: anywhere; }
-    .note {
-      font-size: 12px;
-      margin-top: 5px;
-      color: var(--tg-theme-hint-color, #aab2c5);
-      line-height: 1.4;
-    }
-    .mini {
+    .username { font-weight: bold; font-size: 17px; }
+    .small { opacity: .7; font-size: 13px; margin-top: 5px; }
+    .copy {
       width: auto;
-      flex-shrink: 0;
-      margin: 0;
-      padding: 10px;
-      font-size: 12px;
+      margin: 8px 0 0;
+      padding: 8px 12px;
+      font-size: 14px;
     }
-    .section-title { margin: 22px 0 8px; font-size: 18px; }
-    .empty { padding: 12px 0; }
-    .progress {
-      height: 6px;
-      border-radius: 6px;
-      background: var(--tg-theme-secondary-bg-color, #202637);
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: #36b37e;
-      transition: width .2s;
-    }
+    .history-item { font-size: 13px; opacity: .8; margin-top: 8px; }
+    .notice { font-size: 13px; line-height: 1.5; opacity: .75; }
+    a { color: var(--tg-theme-link-color, #65aaff); }
   </style>
 </head>
 <body>
-<main>
-  <h1>✨ Username Finder</h1>
-  <p class="muted">
-    Поиск Telegram-имён с предварительной проверкой через сторонний API.
-    Даже результат «доступно» не гарантирует, что Telegram разрешит назначить имя.
+<div class="app">
+  <h1>🔎 Username Finder</h1>
+  <div class="sub">Поиск коротких имён пользователей Telegram</div>
+
+  <div class="panel">
+    <label for="length">Длина имени</label>
+    <select id="length">
+      <option value="5">5 символов</option>
+      <option value="6">6 символов</option>
+      <option value="7">7 символов</option>
+      <option value="8" selected>8 символов</option>
+    </select>
+
+    <label for="amount">Сколько вариантов проверить</label>
+    <select id="amount">
+      <option value="5">5 имён</option>
+      <option value="10" selected>10 имён</option>
+      <option value="15">15 имён</option>
+      <option value="30">30 имён</option>
+      <option value="60">60 имён</option>
+      <option value="100">100 имён</option>
+    </select>
+
+    <label for="style">Стиль имён</label>
+    <select id="style">
+      <option value="mixed">Смешанные — рекомендуется</option>
+      <option value="english">Английские слова и сочетания</option>
+      <option value="invented">Необычные выдуманные слова</option>
+      <option value="translit">Русская транслитерация</option>
+      <option value="letters">Случайные буквы</option>
+    </select>
+
+    <button id="start">Найти свободные имена</button>
+  </div>
+
+  <div class="panel">
+    <div id="status" class="status">Готов к поиску.</div>
+    <div id="results"></div>
+  </div>
+
+  <div class="panel">
+    <strong>Последние 5 поисков</strong>
+    <div id="history"></div>
+    <button id="clearHistory" type="button">Очистить историю</button>
+  </div>
+
+  <p class="notice">
+    Важно: публичная проверка Telegram иногда не может точно отличить
+    занятое имя от свободного. Результат API — предварительная проверка,
+    окончательно подтвердить доступность можно только средствами Telegram.
   </p>
-
-  <label for="style">Стиль</label>
-  <select id="style">
-    <option value="all">Все стили</option>
-    <option value="english">Английские слова</option>
-    <option value="russian">Русские слова латиницей</option>
-    <option value="madeup">Выдуманные имена</option>
-  </select>
-
-  <label for="length">Длина имени</label>
-  <select id="length">
-    <option value="5">5 букв</option>
-    <option value="6">6 букв</option>
-    <option value="7">7 букв</option>
-    <option value="8">8 букв</option>
-  </select>
-
-  <label for="amount">Сколько свободных имён найти</label>
-  <select id="amount">
-    <option value="5">5 имён</option>
-    <option value="10" selected>10 имён</option>
-    <option value="15">15 имён</option>
-    <option value="20">20 имён</option>
-  </select>
-
-  <button id="start">🔎 Найти свободные</button>
-  <button id="stop" class="secondary" disabled>Остановить проверку</button>
-  <button id="clear" class="secondary">Сбросить историю повторов</button>
-
-  <p id="status" class="muted" aria-live="polite">Готово к проверке.</p>
-  <div class="progress"><div id="progressBar" class="progress-bar"></div></div>
-
-  <h2 class="section-title">Предварительно свободные имена</h2>
-  <section id="results">
-    <p class="muted empty">Здесь появятся результаты.</p>
-  </section>
-
-  <p class="muted">
-    Занятые и непроверенные имена скрываются. Окончательная проверка
-    доступности возможна только средствами Telegram.
-  </p>
-</main>
+</div>
 
 <script>
-  const tg = window.Telegram?.WebApp;
-  tg?.ready();
-  tg?.expand();
-
+(() => {
   const API = "https://tg-username-api.vercel.app/api/v1/check/bulk";
-  const HISTORY_KEY = "usernameFinderCheckedHistoryV1";
-  const BATCH_SIZE = 15;
-  const MAX_CHECKS = 150;
-  const REQUEST_DELAY = 1200;
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+  }
 
-  let stopped = false;
-  let searching = false;
-  let currentResults = [];
+  const $ = id => document.getElementById(id);
+  const statusEl = $("status");
+  const resultsEl = $("results");
+  const startBtn = $("start");
 
-  const dictionaries = {
-    english: `
-      amber apple beach bloom blush brave bread breeze brick
-      bride bring broad brown brush cabin candy charm chase
-      cheer chess chest chief child chill chime choir clean
-      clear cliff climb clock cloud coast coral craft crane
-      crash cream creek crisp crown dance dream dress drift
-      drink drive earth elite enjoy entry faith fairy fancy
-      feast fence field flame flash fleet float flour focus
-      force fresh fruit ghost giant glass globe glory grace
-      grade grain grand grape graph grass green greet grind
-      group guard guess guest guide happy heart honey horse
-      hotel house human humor image ivory jewel joint juice
-      label laser laugh learn lemon level light linen local
-      logic lotus lucky lunar magic mango maple march match
-      medal mercy metal model money month moral motor mouse
-      music night noble noise north novel ocean olive opera
-      orbit order outer owner paint panel paper peace pearl
-      phase phone photo piano piece pilot pixel place plain
-      plane plant plate point polar power press price pride
-      prime print prize proud queen quest quick quiet radar
-      radio raise range rapid reach react ready relax reply
-      right river robin rocky round royal ruler salad scale
-      scene scope score sense serve shade shape share sharp
-      sheep sheet shelf shift shine shirt shore short sight
-      skill sleep slice slide slope small smart smile smoke
-      solid solve sound south space spare spark speak speed
-      spell spice spine split sport spray stack stage stair
-      stamp stand start state steam steel steep still stock
-      stone store storm story strip study style sugar suite
-      super sweet swift table taste teach theme thick thing
-      think third throw tiger tight timer title today token
-      topic total touch tough tower trace track trade trail
-      train treat trend trial tribe trick trust truth under
-      union unity upper urban usual valid value video visit
-      vital voice waste watch water wheel white whole woman
-      world worry worth write young youth
-    `.trim().split(/\s+/),
+  const STORAGE_KEY = "usernameFinderHistoryV2";
+  const RECENT_KEY = "usernameFinderRecentV2";
 
-    russian: `
-      dusha nochi lunae volny volna iskra vetra vetry zarya
-      roska mirny mirna lesok lesny lesna listy snega zimny
-      zimna vesna vesny letom oseni tisha tishi tuman tumna
-      bereg krasa slova zvuki zvona pesny pesna sveta ognya
-      mechta teplo more reka mir luna veter zvezda solnce
-      radost volna neba nochi svet lesa pole rosa
-    `.trim().split(/\s+/),
+  let history = readStorage(STORAGE_KEY, []);
+  let recent = readStorage(RECENT_KEY, []);
 
-    madeup: `
-      velor lunet zefir elvyn avero nuvia sorel vaylo lyora
-      mirel orvyn zelvo nairi evora lurex rovik alven sylva
-      novar elora aural avira azura elara elune emira enora
-      evara fiora flora halia ilara ilora inari isola ivora
-      kaela kaira kalen keira kiara laira liora lunea lunia
-      maela maira malia melia meria miara naira nalya neira
-      nelia neria noira norie nyora olina oraya oriel orina
-      raela riana saela selia serin shira siana solia taela
-      talia thera thora vaela velia verna viara viona yaira
-      yelia zaria zelia zoria
-    `.trim().split(/\s+/)
-  };
+  function readStorage(key, fallback) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "null");
+      return Array.isArray(value) ? value : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function saveStorage(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
+
+  function randomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+  function pick(arr) {
+    return arr[randomInt(arr.length)];
+  }
+
+  const words = [
+    "nova", "lunar", "vivid", "orbit", "pixel", "frost",
+    "cloud", "dream", "spark", "flame", "swift", "brave",
+    "night", "ghost", "storm", "shine", "magic", "cosmo",
+    "river", "stone", "light", "amber", "raven", "tiger",
+    "comet", "solar", "noble", "ocean", "mango", "pearl",
+    "fox", "wolf", "star", "moon", "sky", "wind",
+    "leaf", "blue", "gold", "echo", "zen", "wave",
+    "mist", "dawn", "void", "neon", "haze", "onyx",
+    "vex", "zora", "kira", "lumi", "yori", "nexo"
+  ];
+
+  const translit = [
+    "mir", "svet", "zvez", "luna", "noch", "son",
+    "les", "voln", "iskr", "sneg", "veter", "ogon",
+    "rad", "dobr", "tih", "more", "bereg", "iskra",
+    "tuman", "zarya", "sova", "kot", "lis", "med"
+  ];
 
   const syllables = [
-    "ae", "al", "ar", "av", "az", "el", "em", "en",
-    "ev", "il", "im", "in", "iv", "ka", "ke", "ki",
-    "la", "le", "li", "lo", "lu", "ma", "me", "mi",
-    "na", "ne", "ni", "no", "ra", "re", "ri", "sa",
-    "se", "si", "so", "ta", "te", "va", "ve", "vi",
-    "ya", "ye", "za", "ze", "zo"
+    "za", "vo", "ri", "ka", "xe", "lo", "mi", "ny",
+    "ra", "ve", "zo", "ki", "fy", "do", "lu", "sy",
+    "ta", "ne", "qu", "vi", "jo", "cy", "re", "wi"
   ];
 
-  const consonants = [
-    "b", "d", "f", "g", "l", "m", "n",
-    "r", "s", "v", "x", "y", "z"
-  ];
-  const vowels = ["a", "e", "i", "o", "y"];
+  function candidate(length, style) {
+    let name = "";
 
-  function createCandidates(length, style) {
-    const source = style === "all"
-      ? Object.values(dictionaries).flat()
-      : (dictionaries[style] || []);
-
-    const candidates = new Set(
-      source
-        .map(word => word.toLowerCase())
-        .filter(word => new RegExp(`^[a-z]{${length}}$`).test(word))
-    );
-
-    if (style === "all" || style === "madeup") {
-      for (const start of syllables) {
-        for (const consonant of consonants) {
-          for (const vowel of vowels) {
-            let word = start + consonant + vowel;
-            while (word.length < length) {
-              word += vowels[Math.floor(Math.random() * vowels.length)];
-            }
-            word = word.slice(0, length);
-            if (/^[a-z]+$/.test(word)) candidates.add(word);
-          }
+    if (style === "english") {
+      const attempts = 20;
+      for (let i = 0; i < attempts; i++) {
+        const a = pick(words);
+        const b = pick(words);
+        name = a + b;
+        if (name.length === length) return name;
+        if (a.length < length) {
+          name = a + b.slice(0, length - a.length);
+          if (name.length === length) return name;
         }
+      }
+    } else if (style === "translit") {
+      for (let i = 0; i < 30; i++) {
+        name = pick(translit) + pick(translit);
+        if (name.length === length) return name;
+        name = (pick(translit) + pick(translit) + pick(translit))
+          .slice(0, length);
+        if (name.length === length) return name;
+      }
+    } else if (style === "letters") {
+      const alphabet = "abcdefghijklmnopqrstuvwxyz";
+      name = "";
+      for (let i = 0; i < length; i++) name += alphabet[randomInt(alphabet.length)];
+      return name;
+    } else {
+      const attempts = 40;
+      for (let i = 0; i < attempts; i++) {
+        name = "";
+        while (name.length < length) name += pick(syllables);
+        name = name.slice(0, length);
+        if (style === "invented" || Math.random() > 0.35) return name;
+        name = pick(words).slice(0, length);
+        if (name.length === length) return name;
       }
     }
 
-    return [...candidates];
-  }
-
-  function readHistory() {
-    try {
-      const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-      return Array.isArray(value) ? value : [];
-    } catch {
-      return [];
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    name = "";
+    while (name.length < length) name += pick(syllables);
+    name = name.slice(0, length);
+    if (name.length !== length) {
+      name = "";
+      for (let i = 0; i < length; i++) name += alphabet[randomInt(26)];
     }
+    return name;
   }
 
-  function getRecentlyUsed() {
-    return new Set(readHistory().slice(-5).flat());
-  }
+  function makeCandidates(length, amount, style) {
+    const output = [];
+    const seen = new Set(recent);
 
-  function saveGeneration(names) {
-    if (!names.length) return;
-    const history = readHistory();
-    history.push(names);
-
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-5)));
-    } catch (error) {
-      console.warn("Не удалось сохранить историю", error);
+    // Пытаемся получить достаточно уникальных имён.
+    let attempts = 0;
+    while (output.length < amount && attempts < amount * 100) {
+      attempts++;
+      const name = candidate(length, style).toLowerCase();
+      if (!/^[a-z]{5,8}$/.test(name)) continue;
+      if (seen.has(name)) continue;
+      seen.add(name);
+      output.push(name);
     }
+
+    return output;
   }
 
-  function shuffle(array) {
-    const result = [...array];
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-    return result;
-  }
-
-  function renderResult(name, explanation) {
-    const container = document.getElementById("results");
-    const item = document.createElement("div");
-    item.className = "item";
-
-    const info = document.createElement("div");
-    info.className = "info";
-
-    const label = document.createElement("div");
-    label.className = "name";
-    label.textContent = "@" + name;
-
-    const note = document.createElement("div");
-    note.className = "note";
-    note.textContent = "🟢 API: предварительно доступно" +
-      (explanation ? " · " + explanation : "");
-
-    info.append(label, note);
-
-    const copy = document.createElement("button");
-    copy.className = "mini";
-    copy.textContent = "Копировать";
-    copy.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(name);
-        copy.textContent = "Скопировано ✓";
-      } catch {
-        const area = document.createElement("textarea");
-        area.value = name;
-        document.body.appendChild(area);
-        area.select();
-        try {
-          document.execCommand("copy");
-          copy.textContent = "Скопировано ✓";
-        } catch {
-          copy.textContent = name;
-        }
-        area.remove();
-      }
-    };
-
-    const open = document.createElement("button");
-    open.className = "mini secondary";
-    open.textContent = "Открыть";
-    open.onclick = () => window.open("https://t.me/" + name, "_blank");
-
-    item.append(info, copy, open);
-    container.append(item);
-  }
-
-  // Поддерживаем русские ключи из примера документации
-  // и английские ключи, если сервер вернёт их.
-  function getField(object, english, russian) {
-    return object?.[english] ?? object?.[russian];
-  }
-
-  function normalizeStatus(result) {
-    const status = String(
-      getField(result, "status", "статус") || ""
-    ).toLowerCase();
-
-    if (["available", "доступно", "свободно"].includes(status)) {
+  function normalizeStatus(value) {
+    const s = String(value || "").toLowerCase();
+    if (["available", "доступно", "свободно", "free"].includes(s)) {
       return "available";
     }
-
-    return status;
+    if (["taken", "занято", "недоступно", "unavailable"].includes(s)) {
+      return "taken";
+    }
+    if (["invalid", "некорректно", "invalid_username"].includes(s)) {
+      return "invalid";
+    }
+    return "unknown";
   }
 
-  async function checkUsernamesBulk(names) {
+  async function checkBatch(names) {
     const response = await fetch(API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        // Формат ключа взят из примера документации.
-        "имена пользователей": names
-      })
+      body: JSON.stringify({ usernames: names })
     });
 
-    if (!response.ok) {
-      throw new Error("API вернул HTTP " + response.status);
+    const text = await response.text();
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("API вернул не JSON. Код ответа: " + response.status);
     }
 
-    const data = await response.json();
-
-    const success = getField(data, "success", "успех");
-    const results = getField(data, "results", "результаты");
-
-    if (success !== true || !Array.isArray(results)) {
+    if (!response.ok) {
       throw new Error(
-        "Ответ API не совпал с документацией: " +
-        JSON.stringify(data).slice(0, 300)
+        "API вернул HTTP " + response.status + ": " +
+        (data.detail || data.error || data.message || text.slice(0, 200))
       );
     }
 
-    return results;
-  }
-
-  async function startSearch() {
-    if (searching) return;
-
-    const startButton = document.getElementById("start");
-    const stopButton = document.getElementById("stop");
-    const statusEl = document.getElementById("status");
-    const resultsBox = document.getElementById("results");
-    const progressBar = document.getElementById("progressBar");
-
-    const length = Number(document.getElementById("length").value);
-    const amount = Number(document.getElementById("amount").value);
-    const style = document.getElementById("style").value;
-
-    stopped = false;
-    searching = true;
-    startButton.disabled = true;
-    stopButton.disabled = false;
-    resultsBox.replaceChildren();
-    currentResults = [];
-    progressBar.style.width = "0%";
-
-    const recent = getRecentlyUsed();
-
-    let pool = createCandidates(length, style)
-      .filter(name => !recent.has(name));
-
-    if (style !== "madeup") {
-      const extra = createCandidates(length, "madeup")
-        .filter(name => !recent.has(name) && !pool.includes(name));
-      pool = pool.concat(extra);
+    const list = data.results || data["результаты"];
+    if (!Array.isArray(list)) {
+      throw new Error(
+        "Не найден список results в ответе API. Ответ: " +
+        JSON.stringify(data).slice(0, 350)
+      );
     }
 
-    pool = shuffle([...new Set(pool)]).slice(0, MAX_CHECKS);
+    return list.map((item, index) => {
+      const username = item.username ||
+        item["имя пользователя"] ||
+        names[index];
 
-    if (!pool.length) {
-      statusEl.textContent =
-        "Нет новых кандидатов. Измени длину или сбрось историю.";
-      startButton.disabled = false;
-      stopButton.disabled = true;
-      searching = false;
+      const result = item.result || item["результат"] || {};
+      const rawStatus = result.status || result["статус"] ||
+        item.status || item["статус"];
+
+      return {
+        username: String(username).replace(/^@/, ""),
+        status: normalizeStatus(rawStatus),
+        explanation: result.explanation || result["объяснение"] || ""
+      };
+    });
+  }
+
+  function addResult(item) {
+    const card = document.createElement("div");
+    card.className = "result";
+
+    const title = document.createElement("div");
+    title.className = "username";
+    title.textContent = "@" + item.username;
+
+    const details = document.createElement("div");
+    details.className = "small";
+    details.textContent = "API сообщает: доступно (предварительно)";
+
+    const copy = document.createElement("button");
+    copy.className = "copy";
+    copy.textContent = "Копировать имя";
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText("@" + item.username);
+        copy.textContent = "Скопировано!";
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = "@" + item.username;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        copy.textContent = "Скопировано!";
+      }
+    });
+
+    const link = document.createElement("a");
+    link.href = "https://t.me/" + encodeURIComponent(item.username);
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = "Открыть в Telegram";
+    link.style.display = "block";
+    link.style.marginTop = "8px";
+
+    card.append(title, details, copy, link);
+    resultsEl.appendChild(card);
+  }
+
+  function renderHistory() {
+    const el = $("history");
+    el.replaceChildren();
+
+    if (!history.length) {
+      el.textContent = "Пока поисков не было.";
       return;
     }
 
-    const checkedThisRun = [];
-    let checked = 0;
-    let errors = 0;
-    let lastError = "";
+    history.slice(0, 5).forEach(run => {
+      const item = document.createElement("div");
+      item.className = "history-item";
+      item.textContent =
+        run.date + " — длина " + run.length +
+        ", проверено " + run.checked +
+        ", найдено " + run.found;
+      el.appendChild(item);
+    });
+  }
+
+  async function startSearch() {
+    const length = Number($("length").value);
+    const amount = Number($("amount").value);
+    const style = $("style").value;
+
+    startBtn.disabled = true;
+    resultsEl.replaceChildren();
 
     try {
-      for (
-        let offset = 0;
-        offset < pool.length && currentResults.length < amount;
-        offset += BATCH_SIZE
-      ) {
-        if (stopped) break;
-
-        const batch = pool.slice(offset, offset + BATCH_SIZE);
-
-        statusEl.textContent =
-          `Проверка пачки. Проверено: ${checked}/${pool.length}. ` +
-          `Найдено: ${currentResults.length}/${amount}.`;
-
-        let apiResults;
-
-        try {
-          apiResults = await checkUsernamesBulk(batch);
-        } catch (error) {
-          errors += batch.length;
-          lastError = error.message;
-          checked += batch.length;
-          checkedThisRun.push(...batch);
-          console.error("Ошибка пакетной проверки:", error);
-          continue;
-        }
-
-        const returnedNames = new Set();
-
-        for (const item of apiResults) {
-          const rawName = getField(item, "username", "имя пользователя");
-          if (!rawName) continue;
-
-          const name = String(rawName)
-            .replace(/^@/, "")
-            .toLowerCase();
-
-          returnedNames.add(name);
-          checkedThisRun.push(name);
-          checked++;
-
-          const result = getField(item, "result", "результат") || {};
-          const status = normalizeStatus(result);
-          const explanation = getField(
-            result, "explanation", "объяснение"
-          ) || "";
-
-          if (status === "available" && currentResults.length < amount) {
-            currentResults.push(name);
-            renderResult(name, explanation);
-          }
-        }
-
-        // Сохраняем в историю и имена, которые API не вернул.
-        for (const name of batch) {
-          if (!returnedNames.has(name)) checkedThisRun.push(name);
-        }
-
-        progressBar.style.width =
-          Math.round(Math.min(offset + batch.length, pool.length) /
-          pool.length * 100) + "%";
-
-        statusEl.textContent =
-          `Проверено: ${Math.min(offset + batch.length, pool.length)}/${pool.length}. ` +
-          `Найдено: ${currentResults.length}/${amount}.`;
-
-        if (
-          offset + BATCH_SIZE < pool.length &&
-          currentResults.length < amount &&
-          !stopped
-        ) {
-          await new Promise(resolve => setTimeout(resolve, REQUEST_DELAY));
-        }
-      }
-    } finally {
-      saveGeneration([...new Set(checkedThisRun)]);
-
-      if (!currentResults.length) {
-        const message = document.createElement("p");
-        message.className = "muted empty";
-        message.textContent = errors
-          ? "Проверка API завершилась с ошибками. Последняя ошибка: " + lastError
-          : "API не подтвердил ни одного свободного имени. Попробуй другую длину или стиль.";
-        resultsBox.append(message);
+      const names = makeCandidates(length, amount, style);
+      if (!names.length) {
+        throw new Error("Не удалось сгенерировать имена. Попробуй другой стиль.");
       }
 
       statusEl.textContent =
-        `${stopped ? "Остановлено" : "Готово"}. ` +
-        `Проверено: ${checked}. Найдено: ${currentResults.length}.` +
-        (errors ? ` Ошибок в пачках: ${errors}.` : "");
+        "Сгенерировано " + names.length +
+        " имён. Начинаю проверку…";
 
-      startButton.disabled = false;
-      stopButton.disabled = true;
-      searching = false;
+      const available = [];
+      let checked = 0;
+
+      // API разрешает максимум 15 имён в одном запросе.
+      for (let i = 0; i < names.length; i += 15) {
+        const batch = names.slice(i, i + 15);
+        statusEl.textContent =
+          "Проверяю " + Math.min(i + batch.length, names.length) +
+          " из " + names.length + "…";
+
+        const results = await checkBatch(batch);
+        checked += batch.length;
+
+        results.forEach(item => {
+          if (item.status === "available") available.push(item);
+        });
+      }
+
+      if (available.length) {
+        available.forEach(addResult);
+      } else {
+        const message = document.createElement("div");
+        message.className = "result";
+        message.textContent =
+          "API не подтвердил ни одного свободного имени в этой выборке. " +
+          "Это не обязательно значит, что все имена заняты: часть результатов " +
+          "может иметь статус unknown.";
+        resultsEl.appendChild(message);
+      }
+
+      recent = [...names, ...recent].slice(0, 500);
+      saveStorage(RECENT_KEY, recent);
+
+      history.unshift({
+        date: new Date().toLocaleString("ru-RU"),
+        length,
+        checked,
+        found: available.length
+      });
+      history = history.slice(0, 5);
+      saveStorage(STORAGE_KEY, history);
+      renderHistory();
+
+      statusEl.textContent =
+        "Готово. Проверено: " + checked +
+        ". API подтвердил доступность: " + available.length + ".";
+    } catch (error) {
+      statusEl.textContent =
+        "Ошибка поиска: " + (error && error.message ? error.message : String(error));
+    } finally {
+      startBtn.disabled = false;
     }
   }
 
-  document.getElementById("start").addEventListener("click", startSearch);
+  startBtn.addEventListener("click", startSearch);
 
-  document.getElementById("stop").addEventListener("click", () => {
-    stopped = true;
-    document.getElementById("status").textContent =
-      "Останавливаю проверку…";
+  $("clearHistory").addEventListener("click", () => {
+    history = [];
+    recent = [];
+    saveStorage(STORAGE_KEY, history);
+    saveStorage(RECENT_KEY, recent);
+    renderHistory();
+    statusEl.textContent = "История очищена.";
   });
 
-  document.getElementById("clear").addEventListener("click", () => {
-    localStorage.removeItem(HISTORY_KEY);
-    document.getElementById("status").textContent =
-      "История повторов очищена.";
-  });
+  renderHistory();
+})();
 </script>
 </body>
 </html>
